@@ -7,6 +7,7 @@ dependencies {
 
     implementation(libs.baksmali)
     implementation(libs.smali)
+    implementation(libs.gson)
     implementation(libs.guava)
     implementation(libs.commons.io)
     implementation(libs.commons.text)
