@@ -369,6 +369,12 @@ public class Main {
             case "security":
                 cmdSecurity(cmdArgs);
                 break;
+            case "api-surface":
+                cmdApiSurface(cmdArgs);
+                break;
+            case "components":
+                cmdAllComponents(cmdArgs);
+                break;
             case "search":
                 cmdSearch(cmdArgs);
                 break;
@@ -905,6 +911,38 @@ public class Main {
             new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
         brut.androlib.analyze.SecurityReport report = analyzer.getSecurityReport();
         System.out.println(brut.androlib.output.JsonOutput.toJson(report));
+    }
+
+    private static void cmdApiSurface(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ApiSurfaceInfo surface = analyzer.getApiSurface();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(surface));
+    }
+
+    private static void cmdAllComponents(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, java.util.List<brut.androlib.analyze.ComponentInfo>> components = analyzer.getAllComponents();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(components));
     }
 
     private static final Option searchTypeOption = Option.builder("t")

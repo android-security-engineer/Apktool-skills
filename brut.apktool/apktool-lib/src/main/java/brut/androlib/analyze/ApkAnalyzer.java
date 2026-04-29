@@ -273,4 +273,59 @@ public class ApkAnalyzer {
 
         return summary;
     }
+
+    public ApiSurfaceInfo getApiSurface() throws AndrolibException {
+        ApiSurfaceInfo surface = new ApiSurfaceInfo();
+        ManifestInfo manifest = getManifestInfo();
+        if (manifest == null) return surface;
+
+        for (ComponentInfo comp : manifest.getActivities()) {
+            if (comp.isExported()) surface.getExportedActivities().add(comp);
+        }
+        for (ComponentInfo comp : manifest.getServices()) {
+            if (comp.isExported()) surface.getExportedServices().add(comp);
+        }
+        for (ComponentInfo comp : manifest.getReceivers()) {
+            if (comp.isExported()) surface.getExportedReceivers().add(comp);
+        }
+        for (ComponentInfo comp : manifest.getProviders()) {
+            if (comp.isExported()) surface.getExportedProviders().add(comp);
+        }
+
+        collectIntentFilters(manifest.getActivities(), "activity", surface.getIntentFilters());
+        collectIntentFilters(manifest.getServices(), "service", surface.getIntentFilters());
+        collectIntentFilters(manifest.getReceivers(), "receiver", surface.getIntentFilters());
+
+        surface.setTotalExportedComponents(
+            surface.getExportedActivities().size() +
+            surface.getExportedServices().size() +
+            surface.getExportedReceivers().size() +
+            surface.getExportedProviders().size()
+        );
+
+        return surface;
+    }
+
+    private void collectIntentFilters(List<ComponentInfo> components, String type, List<ApiSurfaceInfo.IntentFilterInfo> filters) {
+        for (ComponentInfo comp : components) {
+            if (!comp.getIntentFilters().isEmpty()) {
+                ApiSurfaceInfo.IntentFilterInfo filter = new ApiSurfaceInfo.IntentFilterInfo();
+                filter.setComponent(comp.getName());
+                filter.setComponentType(type);
+                filter.setActions(comp.getIntentFilters());
+                filters.add(filter);
+            }
+        }
+    }
+
+    public java.util.Map<String, List<ComponentInfo>> getAllComponents() throws AndrolibException {
+        java.util.Map<String, List<ComponentInfo>> result = new java.util.LinkedHashMap<>();
+        ManifestInfo manifest = getManifestInfo();
+        if (manifest == null) return result;
+        result.put("activities", manifest.getActivities());
+        result.put("services", manifest.getServices());
+        result.put("receivers", manifest.getReceivers());
+        result.put("providers", manifest.getProviders());
+        return result;
+    }
 }
