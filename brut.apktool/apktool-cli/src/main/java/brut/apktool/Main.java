@@ -339,6 +339,36 @@ public class Main {
             case "publicize-resources":
                 cmdPublicizeResources(cmdArgs);
                 break;
+            case "info":
+                cmdInfo(cmdArgs);
+                break;
+            case "manifest":
+                cmdManifest(cmdArgs);
+                break;
+            case "permissions":
+                cmdPermissions(cmdArgs);
+                break;
+            case "activities":
+                cmdComponents(cmdArgs, "activity");
+                break;
+            case "services":
+                cmdComponents(cmdArgs, "service");
+                break;
+            case "receivers":
+                cmdComponents(cmdArgs, "receiver");
+                break;
+            case "providers":
+                cmdComponents(cmdArgs, "provider");
+                break;
+            case "sdk-info":
+                cmdSdkInfo(cmdArgs);
+                break;
+            case "resources":
+                cmdResources(cmdArgs);
+                break;
+            case "security":
+                cmdSecurity(cmdArgs);
+                break;
             case "h":
             case "help":
             case "-help":
@@ -712,6 +742,152 @@ public class Main {
         new Framework(config).publicizeResources(new File(arscName));
     }
 
+    private static void cmdInfo(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ApkSummary summary = analyzer.getSummary();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(summary));
+    }
+
+    private static void cmdManifest(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ManifestInfo manifest = analyzer.getManifestInfo();
+        if (manifest == null) {
+            System.err.println("No AndroidManifest.xml found in the APK.");
+            System.exit(1);
+            return;
+        }
+        System.out.println(brut.androlib.output.JsonOutput.toJson(manifest));
+    }
+
+    private static void cmdPermissions(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ManifestInfo manifest = analyzer.getManifestInfo();
+        if (manifest == null) {
+            System.err.println("No AndroidManifest.xml found in the APK.");
+            System.exit(1);
+            return;
+        }
+        System.out.println(brut.androlib.output.JsonOutput.toJson(manifest.getPermissions()));
+    }
+
+    private static void cmdComponents(String[] args, String type) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ManifestInfo manifest = analyzer.getManifestInfo();
+        if (manifest == null) {
+            System.err.println("No AndroidManifest.xml found in the APK.");
+            System.exit(1);
+            return;
+        }
+
+        java.util.List<brut.androlib.analyze.ComponentInfo> components;
+        switch (type) {
+            case "activity": components = manifest.getActivities(); break;
+            case "service": components = manifest.getServices(); break;
+            case "receiver": components = manifest.getReceivers(); break;
+            case "provider": components = manifest.getProviders(); break;
+            default: components = java.util.Collections.emptyList(); break;
+        }
+        System.out.println(brut.androlib.output.JsonOutput.toJson(components));
+    }
+
+    private static void cmdSdkInfo(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ManifestInfo manifest = analyzer.getManifestInfo();
+        if (manifest == null) {
+            System.err.println("No AndroidManifest.xml found in the APK.");
+            System.exit(1);
+            return;
+        }
+
+        java.util.Map<String, String> sdkInfo = new java.util.LinkedHashMap<>();
+        if (manifest.getMinSdkVersion() != null) sdkInfo.put("minSdkVersion", manifest.getMinSdkVersion());
+        if (manifest.getTargetSdkVersion() != null) sdkInfo.put("targetSdkVersion", manifest.getTargetSdkVersion());
+        if (manifest.getMaxSdkVersion() != null) sdkInfo.put("maxSdkVersion", manifest.getMaxSdkVersion());
+        System.out.println(brut.androlib.output.JsonOutput.toJson(sdkInfo));
+    }
+
+    private static void cmdResources(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ResourceSummary summary = analyzer.getResourceSummary();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(summary));
+    }
+
+    private static void cmdSecurity(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.SecurityReport report = analyzer.getSecurityReport();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(report));
+    }
+
     private static void printOptionConflict(Option option, Option conflict) {
         System.err.println("Ignoring " + formatOption(option) + " (cannot be used with " + formatOption(conflict) + ")");
     }
@@ -785,6 +961,20 @@ public class Main {
             writer.println("apktool h|help");
             writer.println();
             writer.println("apktool v|version");
+            writer.println();
+        }
+        if (advancedMode && loadedOptions == null) {
+            writer.println("AI-Apktool analysis commands:");
+            writer.println("apktool info <apk-file>");
+            writer.println("apktool manifest <apk-file>");
+            writer.println("apktool permissions <apk-file>");
+            writer.println("apktool activities <apk-file>");
+            writer.println("apktool services <apk-file>");
+            writer.println("apktool receivers <apk-file>");
+            writer.println("apktool providers <apk-file>");
+            writer.println("apktool sdk-info <apk-file>");
+            writer.println("apktool resources <apk-file>");
+            writer.println("apktool security <apk-file>");
             writer.println();
         }
 
