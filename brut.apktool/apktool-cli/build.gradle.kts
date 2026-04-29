@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation(project(":brut.apktool:apktool-lib"))
+    implementation(project(":brut.apktool:apktool-serve"))
     implementation(libs.commons.cli)
     r8(libs.r8)
 }

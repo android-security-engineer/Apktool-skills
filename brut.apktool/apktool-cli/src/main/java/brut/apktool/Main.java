@@ -369,6 +369,21 @@ public class Main {
             case "security":
                 cmdSecurity(cmdArgs);
                 break;
+            case "search":
+                cmdSearch(cmdArgs);
+                break;
+            case "diff":
+                cmdDiff(cmdArgs);
+                break;
+            case "structure":
+                cmdStructure(cmdArgs);
+                break;
+            case "serve":
+                cmdServe(cmdArgs);
+                break;
+            case "ai":
+                cmdAi(cmdArgs);
+                break;
             case "h":
             case "help":
             case "-help":
@@ -888,6 +903,139 @@ public class Main {
         System.out.println(brut.androlib.output.JsonOutput.toJson(report));
     }
 
+    private static final Option searchTypeOption = Option.builder("t")
+        .longOpt("type")
+        .desc("Search type: strings, classes, methods. (default: classes)")
+        .hasArg()
+        .argName("type")
+        .get();
+
+    private static final Options searchOptions = new Options();
+
+    private static void cmdSearch(String[] args) throws AndrolibException {
+        searchOptions.addOption(searchTypeOption);
+        CommandLine cli = parseOptions(searchOptions, args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        String pattern = argList.size() > 1 ? argList.get(1) : ".*";
+
+        String type = cli.getOptionValue(searchTypeOption, "classes");
+
+        brut.androlib.search.ApkSearcher searcher =
+            new brut.androlib.search.ApkSearcher(new File(apkName), config);
+
+        brut.androlib.search.SearchResult result;
+        switch (type) {
+            case "strings":
+                result = searcher.searchStrings(pattern);
+                break;
+            case "methods":
+                result = searcher.searchMethods(pattern);
+                break;
+            case "classes":
+            default:
+                result = searcher.searchClasses(pattern);
+                break;
+        }
+        System.out.println(brut.androlib.output.JsonOutput.toJson(result));
+    }
+
+    private static void cmdDiff(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.size() < 2) {
+            System.err.println("Two apk files required: apktool diff <apk1> <apk2>");
+            System.exit(1);
+            return;
+        }
+
+        brut.androlib.analyze.DiffResult result =
+            brut.androlib.analyze.ApkDiff.diff(new File(argList.get(0)), new File(argList.get(1)), config);
+        System.out.println(brut.androlib.output.JsonOutput.toJson(result));
+    }
+
+    private static void cmdStructure(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+
+        brut.androlib.analyze.StructureInfo info =
+            brut.androlib.analyze.ApkDiff.getStructure(new File(argList.get(0)), config);
+        System.out.println(brut.androlib.output.JsonOutput.toJson(info));
+    }
+
+    private static final Option servePortOption = Option.builder("p")
+        .longOpt("port")
+        .desc("Port to run the server on. (default: 8080)")
+        .hasArg()
+        .argName("port")
+        .type(Integer.class)
+        .get();
+
+    private static final Options serveOptions = new Options();
+
+    private static void cmdServe(String[] args) {
+        serveOptions.addOption(servePortOption);
+        CommandLine cli = parseOptions(serveOptions, args);
+
+        int port = 8080;
+        if (cli.hasOption(servePortOption)) {
+            port = Integer.parseInt(cli.getOptionValue(servePortOption));
+        }
+
+        brut.apktool.serve.ApktoolServer.main(new String[]{String.valueOf(port)});
+    }
+
+    private static final Option aiActionOption = Option.builder("a")
+        .longOpt("action")
+        .desc("AI action: explain, security-review, summarize. (default: explain)")
+        .hasArg()
+        .argName("action")
+        .get();
+
+    private static final Options aiOptions = new Options();
+
+    private static void cmdAi(String[] args) throws AndrolibException {
+        aiOptions.addOption(aiActionOption);
+        CommandLine cli = parseOptions(aiOptions, args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        String action = cli.getOptionValue(aiActionOption, "explain");
+
+        brut.androlib.ai.AiPromptBuilder builder =
+            new brut.androlib.ai.AiPromptBuilder(new File(apkName), config);
+
+        String prompt;
+        switch (action) {
+            case "security-review":
+                prompt = builder.buildSecurityReviewPrompt();
+                break;
+            case "summarize":
+                prompt = builder.buildSummarizePrompt();
+                break;
+            case "explain":
+            default:
+                prompt = builder.buildExplainPrompt();
+                break;
+        }
+
+        System.out.println(prompt);
+    }
+
     private static void printOptionConflict(Option option, Option conflict) {
         System.err.println("Ignoring " + formatOption(option) + " (cannot be used with " + formatOption(conflict) + ")");
     }
@@ -975,6 +1123,11 @@ public class Main {
             writer.println("apktool sdk-info <apk-file>");
             writer.println("apktool resources <apk-file>");
             writer.println("apktool security <apk-file>");
+            writer.println("apktool search [options] <apk-file> [pattern]");
+            writer.println("apktool diff <apk1> <apk2>");
+            writer.println("apktool structure <apk-file>");
+            writer.println("apktool serve [options]");
+            writer.println("apktool ai [options] <apk-file>");
             writer.println();
         }
 

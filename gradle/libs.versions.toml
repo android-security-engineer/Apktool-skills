@@ -5,6 +5,8 @@ commons_cli = "1.11.0"
 commons_text = "1.15.0"
 gson = "2.11.0"
 guava = "33.6.0-jre"
+javalin = "5.6.3"
+slf4j = "2.0.12"
 junit = "4.13.2"
 r8 = "9.1.31"
 smali = "b6365a84f4" # https://github.com/google/smali/issues/100
@@ -19,7 +21,9 @@ commons_io = { module = "commons-io:commons-io", version.ref = "commons_io" }
 commons_text = { module = "org.apache.commons:commons-text", version.ref = "commons_text" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
+javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
 junit = { module = "junit:junit", version.ref = "junit" }
+slf4j_simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
 r8 = { module = "com.android.tools:r8", version.ref = "r8" }
 smali = { module = "com.github.iBotPeaches.smali:smali", version.ref = "smali" }
 xmlpull = { module = "xmlpull:xmlpull", version.ref = "xmlpull" }
