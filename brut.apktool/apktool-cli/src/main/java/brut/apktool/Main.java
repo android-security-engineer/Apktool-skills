@@ -388,8 +388,12 @@ public class Main {
             case "help":
             case "-help":
             case "--help":
-                loadOptions(null, true);
-                printUsage();
+                if (args.length > 1 && "--format=json".equals(args[1])) {
+                    System.out.println(brut.androlib.output.CommandRegistry.toJsonCatalog());
+                } else {
+                    loadOptions(null, true);
+                    printUsage();
+                }
                 break;
             case "v":
             case "version":
@@ -1112,22 +1116,29 @@ public class Main {
             writer.println();
         }
         if (advancedMode && loadedOptions == null) {
-            writer.println("AI-Apktool analysis commands:");
-            writer.println("apktool info <apk-file>");
-            writer.println("apktool manifest <apk-file>");
-            writer.println("apktool permissions <apk-file>");
-            writer.println("apktool activities <apk-file>");
-            writer.println("apktool services <apk-file>");
-            writer.println("apktool receivers <apk-file>");
-            writer.println("apktool providers <apk-file>");
-            writer.println("apktool sdk-info <apk-file>");
-            writer.println("apktool resources <apk-file>");
-            writer.println("apktool security <apk-file>");
-            writer.println("apktool search [options] <apk-file> [pattern]");
-            writer.println("apktool diff <apk1> <apk2>");
-            writer.println("apktool structure <apk-file>");
-            writer.println("apktool serve [options]");
-            writer.println("apktool ai [options] <apk-file>");
+            writer.println("AI-Apktool analysis commands (output: JSON unless noted):");
+            writer.println();
+            writer.println("  info <apk>              - APK metadata summary (package, version, component counts)");
+            writer.println("  manifest <apk>          - Decoded AndroidManifest.xml (components, permissions, flags)");
+            writer.println("  permissions <apk>       - Permission list");
+            writer.println("  activities <apk>        - Activity components with export status");
+            writer.println("  services <apk>          - Service components with export status");
+            writer.println("  receivers <apk>         - BroadcastReceiver components with export status");
+            writer.println("  providers <apk>         - ContentProvider components with export status");
+            writer.println("  components <apk>        - All components in one command");
+            writer.println("  sdk-info <apk>          - SDK version requirements (min/target/max)");
+            writer.println("  resources <apk>         - Resource table summary (types, locales, counts)");
+            writer.println("  security <apk>          - Security report (risk score, dangerous permissions, findings)");
+            writer.println("  api-surface <apk>       - Exported components + intent filters (attack surface)");
+            writer.println("  strings <apk> [pattern] - All strings from DEX and resources");
+            writer.println("  signing <apk>           - APK signing certificate information");
+            writer.println("  search <apk> [pat] -t T - Search strings/classes/methods by regex");
+            writer.println("  diff <apk1> <apk2>      - Compare two APKs (permissions, components, versions)");
+            writer.println("  structure <apk>         - Code structure overview (classes, methods, packages)");
+            writer.println("  serve [-p <port>]       - Start HTTP API server (default: 8080)");
+            writer.println("  ai <apk> -a <action>    - Generate LLM prompt (explain|security-review|summarize)");
+            writer.println();
+            writer.println("AI integration tip: use 'apktool help --format=json' for machine-readable command catalog");
             writer.println();
         }
 
