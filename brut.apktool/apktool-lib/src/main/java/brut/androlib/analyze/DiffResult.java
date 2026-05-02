@@ -10,6 +10,10 @@ public class DiffResult {
     private List<String> removedActivities = new ArrayList<>();
     private List<String> addedServices = new ArrayList<>();
     private List<String> removedServices = new ArrayList<>();
+    private List<String> addedReceivers = new ArrayList<>();
+    private List<String> removedReceivers = new ArrayList<>();
+    private List<String> addedProviders = new ArrayList<>();
+    private List<String> removedProviders = new ArrayList<>();
     private List<String> addedDexFiles = new ArrayList<>();
     private List<String> removedDexFiles = new ArrayList<>();
     private List<String> addedNativeLibs = new ArrayList<>();
@@ -30,6 +34,14 @@ public class DiffResult {
     public void setAddedServices(List<String> addedServices) { this.addedServices = addedServices; }
     public List<String> getRemovedServices() { return removedServices; }
     public void setRemovedServices(List<String> removedServices) { this.removedServices = removedServices; }
+    public List<String> getAddedReceivers() { return addedReceivers; }
+    public void setAddedReceivers(List<String> addedReceivers) { this.addedReceivers = addedReceivers; }
+    public List<String> getRemovedReceivers() { return removedReceivers; }
+    public void setRemovedReceivers(List<String> removedReceivers) { this.removedReceivers = removedReceivers; }
+    public List<String> getAddedProviders() { return addedProviders; }
+    public void setAddedProviders(List<String> addedProviders) { this.addedProviders = addedProviders; }
+    public List<String> getRemovedProviders() { return removedProviders; }
+    public void setRemovedProviders(List<String> removedProviders) { this.removedProviders = removedProviders; }
     public List<String> getAddedDexFiles() { return addedDexFiles; }
     public void setAddedDexFiles(List<String> addedDexFiles) { this.addedDexFiles = addedDexFiles; }
     public List<String> getRemovedDexFiles() { return removedDexFiles; }

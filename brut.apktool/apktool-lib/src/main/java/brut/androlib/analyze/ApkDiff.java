@@ -32,6 +32,16 @@ public class ApkDiff {
             result.setAddedServices(findAdded(s1, s2));
             result.setRemovedServices(findRemoved(s1, s2));
 
+            Set<String> r1 = extractNames(m1.getReceivers());
+            Set<String> r2 = extractNames(m2.getReceivers());
+            result.setAddedReceivers(findAdded(r1, r2));
+            result.setRemovedReceivers(findRemoved(r1, r2));
+
+            Set<String> pv1 = extractNames(m1.getProviders());
+            Set<String> pv2 = extractNames(m2.getProviders());
+            result.setAddedProviders(findAdded(pv1, pv2));
+            result.setRemovedProviders(findRemoved(pv1, pv2));
+
             if (m1.getVersionCode() != m2.getVersionCode()) {
                 result.setVersionCodeChange(m1.getVersionCode() + " -> " + m2.getVersionCode());
             }
