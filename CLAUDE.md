@@ -1,6 +1,6 @@
-# AI-Apktool
+# AI-Apktool Skills
 
-AI-Apktool is an AI-native Android reverse engineering platform built on Apktool. It provides a comprehensive CLI and HTTP API for APK analysis, security auditing, and code exploration.
+AI-native Android reverse engineering skills for Claude Code. Provides 5 skills covering APK analysis, security auditing, and code exploration.
 
 ## Quick Start
 
@@ -19,17 +19,25 @@ java -jar apktool.jar diff app_v1.apk app_v2.apk
 
 # Search for patterns
 java -jar apktool.jar search app.apk "password" -t strings
-java -jar apktool.jar search app.apk "LoginActivity" -t classes
 
 # Generate AI prompts
-java -jar apktool.jar ai app.apk -a explain
 java -jar apktool.jar ai app.apk -a security-review
 
 # JSON help catalog
 java -jar apktool.jar help --format json
 ```
 
-## Command Reference
+## Skills
+
+| Skill | Description | When to Use |
+|-------|-------------|-------------|
+| `quick-analysis` | Fast APK assessment | First encounter with an APK |
+| `security-audit` | Comprehensive security audit | Vulnerability assessment, OWASP compliance |
+| `compare` | Version comparison | Checking changes between app versions |
+| `reverse` | Full reverse engineering | Deep analysis, modification, malware investigation |
+| `reference` | CLI command reference | Looking up exact syntax or output format |
+
+## CLI Command Reference
 
 ### Core Commands
 | Command | Description |
@@ -81,26 +89,9 @@ java -jar apktool.jar help --format json
 All analysis commands output JSON to stdout. Use `jq` or similar tools to parse:
 
 ```bash
-# Get package name only
 java -jar apktool.jar info app.apk | jq '.packageName'
-
-# Get risk score
 java -jar apktool.jar security app.apk | jq '.riskScore'
-
-# Find exported activities
 java -jar apktool.jar api-surface app.apk | jq '.exportedActivities[].name'
-```
-
-## Architecture
-
-```
-apktool-cli/     → CLI entry point (Main.java)
-apktool-lib/     → Core library
-  analyze/       → ApkAnalyzer, data models (ApkSummary, SecurityReport, etc.)
-  search/        → ApkSearcher (strings, classes, methods)
-  ai/            → AiPromptBuilder, AiContext
-  output/        → JsonOutput, CommandRegistry
-apktool-serve/   → HTTP API server (Javalin)
 ```
 
 ## Build
@@ -109,12 +100,3 @@ apktool-serve/   → HTTP API server (Javalin)
 ./gradlew build
 # CLI jar at: brut.apktool/apktool-cli/build/libs/apktool-*.jar
 ```
-
-## Skills
-
-See `.claude/skills/` directory for AI agent workflow guides:
-- `apktool-quick-analysis.md` — Quick APK assessment workflow
-- `apktool-security-audit.md` — Comprehensive security audit
-- `apktool-compare.md` — Version comparison workflow
-- `apktool-reverse.md` — Full reverse engineering workflow
-- `apktool-reference.md` — Complete command reference for AI agents
