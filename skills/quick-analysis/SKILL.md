@@ -1,5 +1,7 @@
 ---
+name: quick-analysis
 description: Quick APK analysis workflow for initial assessment. Use when you need a fast overview of an unknown APK file.
+autoInvoke: true
 ---
 
 # APK Quick Analysis
@@ -12,6 +14,14 @@ Quick analysis workflow for getting a rapid overview of any APK file.
 - Need a quick security assessment
 - Want to understand what an app does
 - Evaluating an app before deeper analysis
+
+## Prerequisites
+
+AI-Apktool CLI must be available. Build from source or download:
+```bash
+./gradlew build
+# JAR at: brut.apktool/apktool-cli/build/libs/apktool-*.jar
+```
 
 ## Workflow
 
@@ -69,19 +79,3 @@ java -jar apktool.jar search <apk-file> "LoginActivity|AuthHelper|Encryption" -t
 - `"HIGH: Application is debuggable"` — app can be attached to a debugger
 - `"MEDIUM: Application allows backup"` — app data can be extracted via adb
 - `"HIGH: N exported components without permission protection"` — attack surface
-
-## Example Session
-
-```
-User: "Analyze this APK file: /path/to/app.apk"
-
-1. Run: java -jar apktool.jar analyze /path/to/app.apk
-2. Read the JSON output
-3. Report findings:
-   - Package: com.example.app v2.1.0
-   - Risk Score: 35/100 (Medium)
-   - 3 dangerous permissions: CAMERA, RECORD_AUDIO, ACCESS_FINE_LOCATION
-   - 2 exported activities without permission protection
-   - Signed by: CN=Developer, O=Example Inc
-   - Debuggable: false (good)
-```
