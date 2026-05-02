@@ -1,58 +1,125 @@
-### Apktool
-_This is the repository for Apktool. The website is at the [apktool.org](https://github.com/iBotPeaches/apktool.org) repository._
+# AI-Apktool Skills
 
-[![CI](https://github.com/iBotPeaches/Apktool/actions/workflows/build.yml/badge.svg)](https://github.com/iBotPeaches/Apktool/actions/workflows/test.yml)
-[![Software License](https://img.shields.io/badge/license-Apache%202.0-brightgreen.svg)](https://github.com/iBotPeaches/Apktool/blob/master/LICENSE.md)
+> AI-native Android reverse engineering skills for Claude Code.
 
-Apktool is a tool for reverse engineering third-party, closed, binary, Android apps. It can decode resources to nearly original form and rebuild them after making some modifications; it makes it possible to debug smali code step-by-step. It also makes working with apps easier thanks to project-like file structure and automation of some repetitive tasks such as building apk, etc.
+5 个 Skills 覆盖 APK 分析全流程：快速分析、安全审计、版本对比、逆向工程、命令参考。
 
-Apktool is **NOT** intended for piracy and other non-legal uses. It could be used for localizing and adding features, adding support for custom platforms, and other GOOD purposes. Just try to be fair with the authors of an app, that you use and probably like.
+## 包含的 Skills（5个）
 
-### Branches
-- `main` - Apktool 3.x branch
-- `2.x` - Maintenance branch for Apktool 2.x releases
+| Skill | 描述 |
+|-------|------|
+| **quick-analysis** | 快速 APK 评估 — 一键获取包名、风险分数、危险权限、导出组件 |
+| **security-audit** | 安全审计 — OWASP Mobile Top 10 映射、攻击面分析、敏感数据搜索 |
+| **compare** | 版本对比 — 权限变更、组件增删、风险分数变化 |
+| **reverse** | 逆向工程 — 解码、搜索、安全审查、AI 提示生成、重打包 |
+| **reference** | 命令参考 — 全部 22 个 CLI 命令的语法、选项、输出格式 |
 
-#### Support
-- [Project Page](https://apktool.org)
-- [#apktool on libera.chat](https://web.libera.chat)
+## 前提条件
 
-#### Security Vulnerabilities
+- 已安装 [Claude Code](https://claude.ai/code)
+- 已构建 AI-Apktool CLI：
 
-If you discover a security vulnerability within Apktool, please send an e-mail to Connor Tumbleson at connor.tumbleson(at)gmail.com. All security vulnerabilities will be promptly addressed.
+```bash
+git clone https://github.com/CC11001100/android-reverse-hub.git
+cd AI-Apktool
+./gradlew build
+# JAR at: brut.apktool/apktool-cli/build/libs/apktool-*.jar
+```
 
-#### Links
-- [Downloads](https://bitbucket.org/iBotPeaches/apktool/downloads)
-- [Downloads Mirror](https://connortumbleson.com/apktool)
-- [How to Build](https://apktool.org/docs/build)
-- [Documentation](https://apktool.org/wiki/the-basics/intro)
-- [Bug Reports](https://github.com/iBotPeaches/Apktool/issues)
-- [Changelog/Information](https://apktool.org/blog)
-- [XDA Post](https://forum.xda-developers.com/t/util-dec-2-2020-apktool-tool-for-reverse-engineering-apk-files.1755243/)
-- [Source (GitHub)](https://github.com/iBotPeaches/Apktool)
-- [Source (Bitbucket)](https://bitbucket.org/iBotPeaches/apktool/)
+## 安装
 
+### 方式 1：作为 Claude Code 插件安装
 
-## Sponsors
+```bash
+# 添加 Marketplace
+claude config add marketplace ai-apktool https://github.com/CC11001100/android-reverse-hub.git
 
-Special thanks goes to the following sponsors:
+# 安装插件
+claude plugin install ai-apktool@ai-apktool
+```
 
-### Sourcetoad
-[Sourcetoad](https://sourcetoad.com/) is an award-winning software and app development firm committed to the co-creation of technology solutions that solve complex business problems, delight users, and help our clients achieve their goals.
+### 方式 2：手动安装 Skills
 
-<a href="https://www.sourcetoad.com" alt="Sourcetoad">
-    <picture>
-        <img src="https://github.com/ibotpeaches/apktool/raw/main/.github/assets/sponsors/sourcetoad-horizontal.svg">
-    </picture>
-</a>
+```bash
+# 克隆到 Claude Code skills 目录
+git clone https://github.com/CC11001100/android-reverse-hub.git ~/.claude/skills/ai-apktool
+```
 
-### Emerge Tools
+### 验证安装
 
-[Emerge Tools](https://www.emergetools.com) is a suite of revolutionary products designed to supercharge mobile apps and the teams that build them.
+```bash
+claude skill list
+# 应看到：
+#   ai-apktool:quick-analysis
+#   ai-apktool:security-audit
+#   ai-apktool:compare
+#   ai-apktool:reverse
+#   ai-apktool:reference
+```
 
-<a href="https://www.emergetools.com" alt="Emerge Tools">
-    <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://github.com/ibotpeaches/apktool/raw/main/.github/assets/sponsors/emerge-tools-vertical-white.svg">
-        <source media="(prefers-color-scheme: light)" srcset="https://github.com/ibotpeaches/apktool/raw/main/.github/assets/sponsors/emerge-tools-vertical-black.svg">
-        <img src="https://github.com/ibotpeaches/apktool/raw/main/.github/assets/sponsors/emerge-tools-vertical-black.svg">
-    </picture>
-</a>
+## 使用
+
+### 自动生效
+
+安装后，当 Claude Code 遇到 APK 相关任务时，会自动识别并使用合适的 Skill。
+
+### 手动调用
+
+```
+/quick-analysis 分析这个 APK: /path/to/app.apk
+/security-audit 对 app.apk 做安全审计
+/compare 对比 app_v1.apk 和 app_v2.apk
+/reverse 逆向分析 app.apk
+/reference 查看 search 命令的用法
+```
+
+### 典型工作流
+
+```
+用户: 分析这个 APK 文件
+
+AI: [使用 quick-analysis skill]
+1. 运行: java -jar apktool.jar analyze /path/to/app.apk
+2. 报告发现:
+   - 包名: com.example.app v2.1.0
+   - 风险分数: 35/100 (中等)
+   - 3 个危险权限: CAMERA, RECORD_AUDIO, ACCESS_FINE_LOCATION
+   - 2 个未保护的导出 Activity
+   - 签名者: CN=Developer, O=Example Inc
+```
+
+## CLI 命令总览
+
+| 类别 | 命令 |
+|------|------|
+| 核心操作 | decode, build, install-framework, clean-frameworks, list-frameworks, publicize-resources |
+| 信息查询 | info, manifest, permissions, activities, services, receivers, providers, components, sdk-info |
+| 高级分析 | security, api-surface, signing, structure, analyze |
+| 搜索 | search |
+| 对比 | diff |
+| AI/服务 | ai, serve |
+
+所有分析命令输出 JSON，可用 `jq` 解析：
+```bash
+java -jar apktool.jar info app.apk | jq '.packageName'
+java -jar apktool.jar security app.apk | jq '.riskScore'
+```
+
+## 架构
+
+```
+skills/
+  quick-analysis/SKILL.md   — 快速分析工作流
+  security-audit/SKILL.md   — 安全审计工作流
+  compare/SKILL.md          — 版本对比工作流
+  reverse/SKILL.md          — 逆向工程工作流
+  reference/SKILL.md        — 命令参考
+.claude-plugin/
+  plugin.json               — 插件元数据
+  marketplace.json          — 市场配置
+CLAUDE.md                   — AI 入口文档
+```
+
+## 许可证
+
+Apache License 2.0
