@@ -381,6 +381,9 @@ public class Main {
             case "analyze":
                 cmdAnalyze(cmdArgs);
                 break;
+            case "strings":
+                cmdStrings(cmdArgs);
+                break;
             case "search":
                 cmdSearch(cmdArgs);
                 break;
@@ -949,6 +952,33 @@ public class Main {
             new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
         java.util.Map<String, java.util.List<brut.androlib.analyze.ComponentInfo>> components = analyzer.getAllComponents();
         System.out.println(brut.androlib.output.JsonOutput.toJson(components));
+    }
+
+    private static final Option stringsPatternOption = Option.builder("p")
+        .longOpt("pattern")
+        .desc("Filter strings by regex pattern. (default: .*)")
+        .hasArg()
+        .argName("pattern")
+        .get();
+
+    private static final Options stringsOptions = new Options();
+
+    private static void cmdStrings(String[] args) throws AndrolibException {
+        stringsOptions.addOption(stringsPatternOption);
+        CommandLine cli = parseOptions(stringsOptions, args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        String pattern = cli.getOptionValue(stringsPatternOption, ".*");
+
+        brut.androlib.search.ApkSearcher searcher =
+            new brut.androlib.search.ApkSearcher(new File(apkName), config);
+        brut.androlib.search.SearchResult result = searcher.searchStrings(pattern);
+        System.out.println(brut.androlib.output.JsonOutput.toJson(result));
     }
 
     private static final Option searchTypeOption = Option.builder("t")
