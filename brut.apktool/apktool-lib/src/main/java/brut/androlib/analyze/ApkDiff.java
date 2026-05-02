@@ -2,8 +2,13 @@ package brut.androlib.analyze;
 
 import brut.androlib.Config;
 import brut.androlib.exceptions.AndrolibException;
+import brut.directory.ExtFile;
+import com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile;
+import com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer;
+import com.android.tools.smali.dexlib2.iface.ClassDef;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class ApkDiff {
@@ -58,9 +63,77 @@ public class ApkDiff {
 
     public static StructureInfo getStructure(File apkFile, Config config) throws AndrolibException {
         StructureInfo info = new StructureInfo();
-        ApkAnalyzer analyzer = new ApkAnalyzer(apkFile, config);
-        ApkSummary summary = analyzer.getSummary();
-        info.setDexCount(summary.getDexCount());
+        ExtFile extFile = new ExtFile(apkFile);
+
+        try {
+            ApkAnalyzer analyzer = new ApkAnalyzer(apkFile, config);
+            ApkSummary summary = analyzer.getSummary();
+            info.setDexCount(summary.getDexCount());
+
+            ZipDexContainer container = new ZipDexContainer(extFile, null);
+            int totalClasses = 0;
+            int totalMethods = 0;
+            int totalFields = 0;
+            Map<String, Integer> packageCounts = new LinkedHashMap<>();
+            List<String> topClasses = new ArrayList<>();
+            Map<String, Integer> dexClassCounts = new LinkedHashMap<>();
+
+            for (String dexName : container.getDexEntryNames()) {
+                ZipDexContainer.DexEntry<DexBackedDexFile> entry = container.getEntry(dexName);
+                if (entry == null) continue;
+
+                DexBackedDexFile dexFile = entry.getDexFile();
+                int dexClassCount = 0;
+
+                for (ClassDef classDef : dexFile.getClasses()) {
+                    dexClassCount++;
+                    totalClasses++;
+
+                    String className = classDef.getType();
+                    String humanName = className.substring(1, className.length() - 1).replace('/', '.');
+
+                    int lastDot = humanName.lastIndexOf('.');
+                    if (lastDot > 0) {
+                        String pkg = humanName.substring(0, lastDot);
+                        packageCounts.merge(pkg, 1, Integer::sum);
+                    }
+
+                    int methodCount = 0;
+                    for (com.android.tools.smali.dexlib2.iface.Method method : classDef.getMethods()) {
+                        methodCount++;
+                    }
+                    totalMethods += methodCount;
+
+                    int fieldCount = 0;
+                    for (com.android.tools.smali.dexlib2.iface.Field field : classDef.getFields()) {
+                        fieldCount++;
+                    }
+                    totalFields += fieldCount;
+
+                    topClasses.add(humanName + " (" + methodCount + " methods, " + fieldCount + " fields)");
+                }
+
+                dexClassCounts.put(dexName, dexClassCount);
+            }
+
+            info.setTotalClasses(totalClasses);
+            info.setTotalMethods(totalMethods);
+            info.setTotalFields(totalFields);
+            info.setPackageCounts(packageCounts);
+            topClasses.sort((a, b) -> {
+                int ma = Integer.parseInt(a.replaceAll(".*\\((\\d+) methods.*", "$1"));
+                int mb = Integer.parseInt(b.replaceAll(".*\\((\\d+) methods.*", "$1"));
+                return mb - ma;
+            });
+            info.setTopClasses(topClasses.subList(0, Math.min(20, topClasses.size())));
+            info.setDexClassCounts(dexClassCounts);
+
+        } catch (IOException ex) {
+            throw new AndrolibException(ex);
+        } finally {
+            try { extFile.close(); } catch (Exception ignored) {}
+        }
+
         return info;
     }
 
