@@ -1,0 +1,13 @@
+{
+  "name": "ai-apktool",
+  "description": "AI-native Android reverse engineering skills - APK analysis, security audit, and code exploration for Claude Code",
+  "version": "1.0.0",
+  "author": {
+    "name": "CC11001100",
+    "url": "https://github.com/CC11001100"
+  },
+  "homepage": "https://github.com/CC11001100/android-reverse-hub/AI-Apktool",
+  "repository": "https://github.com/CC11001100/android-reverse-hub/AI-Apktool",
+  "license": "Apache-2.0",
+  "keywords": ["apk", "android", "reverse-engineering", "security", "analysis", "skills"]
+}
