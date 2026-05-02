@@ -45,6 +45,7 @@ java -jar apktool.jar help --format json
 | `security` | dangerousPermissions, riskScore(0-100) |
 | `api-surface` | totalExportedComponents, intentFilters |
 | `signing` | subject, fingerprints, signing schemes |
+| `strings` | all strings from DEX and resources with pattern filter |
 | `analyze` | all of the above combined |
 
 ## Search Commands
@@ -53,6 +54,9 @@ java -jar apktool.jar help --format json
 java -jar apktool.jar search <apk-file> [pattern] -t <type>
 # type: strings, classes, methods (default: classes)
 # pattern: Java regex (default: .*)
+
+java -jar apktool.jar strings <apk-file> [-p <pattern>]
+# shortcut for search -t strings
 ```
 
 ## Diff & Structure
@@ -78,7 +82,18 @@ java -jar apktool.jar serve [-p <port>]
 - `GET /api/v1/info?apk=<path>`
 - `GET /api/v1/manifest?apk=<path>`
 - `GET /api/v1/permissions?apk=<path>`
+- `GET /api/v1/activities?apk=<path>`
+- `GET /api/v1/services?apk=<path>`
+- `GET /api/v1/receivers?apk=<path>`
+- `GET /api/v1/providers?apk=<path>`
+- `GET /api/v1/components?apk=<path>`
+- `GET /api/v1/sdk-info?apk=<path>`
+- `GET /api/v1/resources?apk=<path>`
 - `GET /api/v1/security?apk=<path>`
+- `GET /api/v1/api-surface?apk=<path>`
+- `GET /api/v1/signing?apk=<path>`
+- `GET /api/v1/structure?apk=<path>`
+- `GET /api/v1/analyze?apk=<path>`
+- `GET /api/v1/ai?apk=<path>&action=<explain|security-review|summarize>`
 - `GET /api/v1/search?apk=<path>&type=<type>&pattern=<pattern>`
 - `GET /api/v1/diff?apk1=<path>&apk2=<path>`
-- `GET /api/v1/resources?apk=<path>`

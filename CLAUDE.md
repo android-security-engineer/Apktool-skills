@@ -65,12 +65,14 @@ java -jar apktool.jar help --format json
 | `security` | Security report + risk score | dangerousPermissions, riskScore(0-100) |
 | `api-surface` | Exported components + intent filters | totalExportedComponents |
 | `signing` | APK signing certificate | subject, fingerprints, signing schemes |
+| `strings` | Extract strings from APK | all strings with pattern filter |
 | `analyze` | Comprehensive one-shot analysis | all of the above combined |
 
 ### Search Commands
 | Command | Description |
 |---------|-------------|
 | `search` | Search strings/classes/methods by regex (`-t strings|classes|methods`) |
+| `strings` | Extract strings with optional pattern filter (`-p pattern`) |
 
 ### Diff & Structure Commands
 | Command | Description |
