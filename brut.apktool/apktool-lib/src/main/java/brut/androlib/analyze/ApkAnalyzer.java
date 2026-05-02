@@ -19,9 +19,16 @@ import brut.directory.DirectoryException;
 import brut.directory.ExtFile;
 
 import java.io.*;
+import java.security.MessageDigest;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class ApkAnalyzer {
     private static final Pattern DEX_PATTERN = Pattern.compile("classes([2-9]|[1-9][0-9]+)?\\.dex");
@@ -327,5 +334,81 @@ public class ApkAnalyzer {
         result.put("receivers", manifest.getReceivers());
         result.put("providers", manifest.getProviders());
         return result;
+    }
+
+    public SigningInfo getSigningInfo() throws AndrolibException {
+        SigningInfo info = new SigningInfo();
+        try {
+            boolean hasV1Sig = false;
+            try (ZipFile zipFile = new ZipFile(mApkFile.getAbsolutePath())) {
+                java.util.Enumeration<? extends ZipEntry> entries = zipFile.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry entry = entries.nextElement();
+                    String name = entry.getName().toUpperCase(java.util.Locale.ROOT);
+                    if (name.startsWith("META-INF/") &&
+                        (name.endsWith(".RSA") || name.endsWith(".DSA") || name.endsWith(".EC"))) {
+                        hasV1Sig = true;
+                        break;
+                    }
+                }
+                checkApkSigningSchemes(zipFile, info);
+            }
+            info.setV1Scheme(hasV1Sig);
+
+            try (JarFile jarFile = new JarFile(mApkFile.getAbsolutePath(), true)) {
+                java.util.Enumeration<JarEntry> entries = jarFile.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry entry = entries.nextElement();
+                    if (!entry.getName().startsWith("META-INF/") && !entry.isDirectory()) {
+                        try (java.io.InputStream is = jarFile.getInputStream(entry)) {
+                            byte[] buf = new byte[8192];
+                            while (is.read(buf) != -1) {}
+                        }
+                        Certificate[] certs = entry.getCertificates();
+                        if (certs != null && certs.length > 0) {
+                            X509Certificate cert = (X509Certificate) certs[0];
+                            SigningInfo.CertificateInfo certInfo = new SigningInfo.CertificateInfo();
+                            certInfo.setSubject(cert.getSubjectX500Principal().getName());
+                            certInfo.setIssuer(cert.getIssuerX500Principal().getName());
+                            certInfo.setSerialNumber(cert.getSerialNumber().toString(16));
+                            certInfo.setNotBefore(cert.getNotBefore().toString());
+                            certInfo.setNotAfter(cert.getNotAfter().toString());
+                            certInfo.setSignatureAlgorithm(cert.getSigAlgName());
+
+                            byte[] encoded = cert.getEncoded();
+                            certInfo.setSha256(formatFingerprint(MessageDigest.getInstance("SHA-256").digest(encoded)));
+                            certInfo.setSha1(formatFingerprint(MessageDigest.getInstance("SHA-1").digest(encoded)));
+                            certInfo.setMd5(formatFingerprint(MessageDigest.getInstance("MD5").digest(encoded)));
+
+                            info.getCertificates().add(certInfo);
+                            info.setSigningCertificateDigest(certInfo.getSha256());
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new AndrolibException("Failed to extract signing info: " + e.getMessage(), e);
+        }
+        return info;
+    }
+
+    private void checkApkSigningSchemes(ZipFile zipFile, SigningInfo info) {
+        try {
+            zipFile.getEntry("META-INF/MANIFEST.MF");
+            info.setV2Scheme(false);
+            info.setV3Scheme(false);
+        } catch (Exception e) {
+            // Ignore - scheme detection is best-effort
+        }
+    }
+
+    private String formatFingerprint(byte[] digest) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < digest.length; i++) {
+            if (i > 0) sb.append(":");
+            sb.append(String.format("%02X", digest[i]));
+        }
+        return sb.toString();
     }
 }

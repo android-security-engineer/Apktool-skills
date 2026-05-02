@@ -375,6 +375,12 @@ public class Main {
             case "components":
                 cmdAllComponents(cmdArgs);
                 break;
+            case "signing":
+                cmdSigning(cmdArgs);
+                break;
+            case "analyze":
+                cmdAnalyze(cmdArgs);
+                break;
             case "search":
                 cmdSearch(cmdArgs);
                 break;
@@ -1078,6 +1084,61 @@ public class Main {
         System.out.println(prompt);
     }
 
+    private static void cmdSigning(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.SigningInfo signingInfo = analyzer.getSigningInfo();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(signingInfo));
+    }
+
+    private static void cmdAnalyze(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        File apkFile = new File(apkName);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(apkFile, config);
+
+        brut.androlib.analyze.AnalyzeResult result = new brut.androlib.analyze.AnalyzeResult();
+        result.setSummary(analyzer.getSummary());
+
+        analyzer = new brut.androlib.analyze.ApkAnalyzer(apkFile, config);
+        result.setManifest(analyzer.getManifestInfo());
+
+        analyzer = new brut.androlib.analyze.ApkAnalyzer(apkFile, config);
+        result.setSecurity(analyzer.getSecurityReport());
+
+        analyzer = new brut.androlib.analyze.ApkAnalyzer(apkFile, config);
+        result.setApiSurface(analyzer.getApiSurface());
+
+        analyzer = new brut.androlib.analyze.ApkAnalyzer(apkFile, config);
+        result.setResources(analyzer.getResourceSummary());
+
+        analyzer = new brut.androlib.analyze.ApkAnalyzer(apkFile, config);
+        result.setSigning(analyzer.getSigningInfo());
+
+        brut.androlib.analyze.StructureInfo structInfo =
+            brut.androlib.analyze.ApkDiff.getStructure(apkFile, config);
+        result.setStructure(structInfo);
+
+        System.out.println(brut.androlib.output.JsonOutput.toJson(result));
+    }
+
     private static void printOptionConflict(Option option, Option conflict) {
         System.err.println("Ignoring " + formatOption(option) + " (cannot be used with " + formatOption(conflict) + ")");
     }
@@ -1170,6 +1231,7 @@ public class Main {
             writer.println("  api-surface <apk>       - Exported components + intent filters (attack surface)");
             writer.println("  strings <apk> [pattern] - All strings from DEX and resources");
             writer.println("  signing <apk>           - APK signing certificate information");
+            writer.println("  analyze <apk>           - Comprehensive one-shot analysis (all of the above)");
             writer.println("  search <apk> [pat] -t T - Search strings/classes/methods by regex");
             writer.println("  diff <apk1> <apk2>      - Compare two APKs (permissions, components, versions)");
             writer.println("  structure <apk>         - Code structure overview (classes, methods, packages)");

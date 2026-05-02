@@ -105,6 +105,10 @@ public class CommandRegistry {
             "apktool structure <apk-file>", "JSON: {totalClasses, totalMethods, totalFields, packageCounts{}, topClasses[], dexCount, dexClassCounts{}}",
             "analysis", new String[]{"apktool structure app.apk"});
 
+        register("analyze", null, "Run comprehensive analysis: all metadata, security, API surface, signing, resources, and structure in one command",
+            "apktool analyze <apk-file>", "JSON: {summary, manifest, security, apiSurface, resources, signing, structure}",
+            "analysis", new String[]{"apktool analyze app.apk"});
+
         // === Service Commands ===
         register("serve", null, "Start HTTP API server for AI agent integration",
             "apktool serve [-p <port>]", "HTTP server on specified port (default 8080)",
