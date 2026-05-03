@@ -44,6 +44,12 @@ public class ApkAnalyzer {
         "android:allowBackup=\"(true|false)\"");
     private static final Pattern MANIFEST_PACKAGE = Pattern.compile(
         "package=\"([^\"]+)\"");
+    private static final Pattern MANIFEST_USES_LIBRARY = Pattern.compile(
+        "<uses-library\\s+[^>]*android:name=\"([^\"]+)\"");
+    private static final Pattern MANIFEST_CLEARTEXT = Pattern.compile(
+        "android:usesCleartextTraffic=\"(true|false)\"");
+    private static final Pattern MANIFEST_NET_SEC_CONFIG = Pattern.compile(
+        "android:networkSecurityConfig=\"([^\"]+)\"");
 
     private static final Set<String> DANGEROUS_PERMISSIONS = new HashSet<>(Arrays.asList(
         "android.permission.READ_CONTACTS", "android.permission.WRITE_CONTACTS",
@@ -202,6 +208,21 @@ public class ApkAnalyzer {
 
         m = MANIFEST_ALLOW_BACKUP.matcher(xml);
         if (m.find()) info.setAllowBackup("true".equals(m.group(1)));
+
+        m = MANIFEST_USES_LIBRARY.matcher(xml);
+        while (m.find()) {
+            info.getUsesLibraries().add(m.group(1));
+        }
+
+        m = MANIFEST_CLEARTEXT.matcher(xml);
+        if (m.find()) {
+            info.setUsesCleartextTraffic("true".equals(m.group(1)));
+        }
+
+        m = MANIFEST_NET_SEC_CONFIG.matcher(xml);
+        if (m.find()) {
+            info.setNetworkSecurityConfig(m.group(1));
+        }
     }
 
     public SecurityReport getSecurityReport() throws AndrolibException {
@@ -229,12 +250,16 @@ public class ApkAnalyzer {
 
         report.setDebuggable(manifest.isDebuggable());
         report.setAllowBackup(manifest.isAllowBackup());
+        report.setUsesCleartextTraffic(manifest.isUsesCleartextTraffic());
 
         if (manifest.isDebuggable()) {
             report.getFindings().add("HIGH: Application is debuggable - android:debuggable=true");
         }
         if (manifest.isAllowBackup()) {
             report.getFindings().add("MEDIUM: Application allows backup - android:allowBackup=true");
+        }
+        if (manifest.isUsesCleartextTraffic()) {
+            report.getFindings().add("MEDIUM: Application uses cleartext traffic - android:usesCleartextTraffic=true");
         }
         if (!report.getDangerousPermissions().isEmpty()) {
             report.getFindings().add("MEDIUM: Application requests " + report.getDangerousPermissions().size() + " dangerous permissions");
@@ -246,6 +271,7 @@ public class ApkAnalyzer {
         int score = 0;
         score += report.isDebuggable() ? 30 : 0;
         score += report.isAllowBackup() ? 10 : 0;
+        score += report.isUsesCleartextTraffic() ? 10 : 0;
         score += Math.min(20, report.getDangerousPermissions().size() * 2);
         score += Math.min(30, report.getHighRiskComponents().size() * 5);
         report.setRiskScore(Math.min(100, score));
@@ -410,5 +436,99 @@ public class ApkAnalyzer {
             sb.append(String.format("%02X", digest[i]));
         }
         return sb.toString();
+    }
+
+    public Map<String, Object> getDexList() throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            Directory dir = mApkFile.getDirectory();
+            List<String> dexFiles = new ArrayList<>();
+            for (String file : dir.getFiles(true)) {
+                if (file.equals("classes.dex") || DEX_PATTERN.matcher(file).matches()) {
+                    dexFiles.add(file);
+                }
+            }
+            result.put("dexCount", dexFiles.size());
+            result.put("dexFiles", dexFiles);
+        } catch (DirectoryException ex) {
+            throw new AndrolibException(ex);
+        }
+        return result;
+    }
+
+    public List<String> getLocales() throws AndrolibException {
+        ResourceSummary summary = getResourceSummary();
+        return new ArrayList<>(summary.getLocales());
+    }
+
+    public Map<String, Object> getNativeLibs() throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            Directory dir = mApkFile.getDirectory();
+            List<String> architectures = new ArrayList<>();
+            Map<String, List<String>> libsByArch = new LinkedHashMap<>();
+
+            if (dir.containsDir("lib")) {
+                for (String archDir : dir.getDir("lib").getFiles(false)) {
+                    architectures.add(archDir);
+                    List<String> libs = new ArrayList<>();
+                    try {
+                        for (String libFile : dir.getDir("lib").getDir(archDir).getFiles(false)) {
+                            libs.add(libFile);
+                        }
+                    } catch (Exception ignored) {}
+                    Collections.sort(libs);
+                    libsByArch.put(archDir, libs);
+                }
+            }
+            result.put("hasNativeLibs", dir.containsDir("lib"));
+            result.put("architectures", architectures);
+            result.put("libsByArch", libsByArch);
+        } catch (DirectoryException ex) {
+            throw new AndrolibException(ex);
+        }
+        return result;
+    }
+
+    public Map<String, Map<String, Integer>> getDexInfo() throws AndrolibException {
+        Map<String, Map<String, Integer>> result = new LinkedHashMap<>();
+        ExtFile extFile = new ExtFile(mApkFile);
+
+        try {
+            com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer container =
+                new com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer(extFile, null);
+
+            for (String dexName : container.getDexEntryNames()) {
+                com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer.DexEntry<
+                    com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile> entry = container.getEntry(dexName);
+                if (entry == null) continue;
+
+                com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile dexFile = entry.getDexFile();
+                int classCount = 0;
+                int methodCount = 0;
+                int fieldCount = 0;
+
+                for (com.android.tools.smali.dexlib2.iface.ClassDef classDef : dexFile.getClasses()) {
+                    classCount++;
+                    for (com.android.tools.smali.dexlib2.iface.Method method : classDef.getMethods()) {
+                        methodCount++;
+                    }
+                    for (com.android.tools.smali.dexlib2.iface.Field field : classDef.getFields()) {
+                        fieldCount++;
+                    }
+                }
+
+                Map<String, Integer> dexStats = new LinkedHashMap<>();
+                dexStats.put("classes", classCount);
+                dexStats.put("methods", methodCount);
+                dexStats.put("fields", fieldCount);
+                result.put(dexName, dexStats);
+            }
+        } catch (IOException ex) {
+            throw new AndrolibException(ex);
+        } finally {
+            try { extFile.close(); } catch (Exception ignored) {}
+        }
+        return result;
     }
 }

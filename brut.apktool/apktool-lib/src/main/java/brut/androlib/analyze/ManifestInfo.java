@@ -19,6 +19,7 @@ public class ManifestInfo {
     private boolean debuggable;
     private boolean allowBackup;
     private String networkSecurityConfig;
+    private boolean usesCleartextTraffic;
 
     public String getPackageName() { return packageName; }
     public void setPackageName(String packageName) { this.packageName = packageName; }
@@ -50,4 +51,7 @@ public class ManifestInfo {
     public void setAllowBackup(boolean allowBackup) { this.allowBackup = allowBackup; }
     public String getNetworkSecurityConfig() { return networkSecurityConfig; }
     public void setNetworkSecurityConfig(String networkSecurityConfig) { this.networkSecurityConfig = networkSecurityConfig; }
+
+    public boolean isUsesCleartextTraffic() { return usesCleartextTraffic; }
+    public void setUsesCleartextTraffic(boolean usesCleartextTraffic) { this.usesCleartextTraffic = usesCleartextTraffic; }
 }

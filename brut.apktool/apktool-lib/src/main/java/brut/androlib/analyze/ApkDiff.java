@@ -10,6 +10,8 @@ import com.android.tools.smali.dexlib2.iface.ClassDef;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class ApkDiff {
     public static DiffResult diff(File apk1, File apk2, Config config) throws AndrolibException {
@@ -56,6 +58,49 @@ public class ApkDiff {
             if (!Objects.equals(m1.getTargetSdkVersion(), m2.getTargetSdkVersion())) {
                 result.setTargetSdkChange(m1.getTargetSdkVersion() + " -> " + m2.getTargetSdkVersion());
             }
+        }
+
+        // Compare DEX files and native libraries
+        try {
+            ZipFile zip1 = new ZipFile(apk1);
+            ZipFile zip2 = new ZipFile(apk2);
+
+            Set<String> dex1 = new HashSet<>();
+            Set<String> dex2 = new HashSet<>();
+            Set<String> native1 = new HashSet<>();
+            Set<String> native2 = new HashSet<>();
+
+            Enumeration<? extends ZipEntry> e1 = zip1.entries();
+            while (e1.hasMoreElements()) {
+                String name = e1.nextElement().getName();
+                if (name.equals("classes.dex") || name.matches("classes([2-9]|[1-9][0-9]+)?\\.dex")) {
+                    dex1.add(name);
+                }
+                if (name.startsWith("lib/") && !name.endsWith("/")) {
+                    native1.add(name);
+                }
+            }
+
+            Enumeration<? extends ZipEntry> e2 = zip2.entries();
+            while (e2.hasMoreElements()) {
+                String name = e2.nextElement().getName();
+                if (name.equals("classes.dex") || name.matches("classes([2-9]|[1-9][0-9]+)?\\.dex")) {
+                    dex2.add(name);
+                }
+                if (name.startsWith("lib/") && !name.endsWith("/")) {
+                    native2.add(name);
+                }
+            }
+
+            result.setAddedDexFiles(findAdded(dex1, dex2));
+            result.setRemovedDexFiles(findRemoved(dex1, dex2));
+            result.setAddedNativeLibs(findAdded(native1, native2));
+            result.setRemovedNativeLibs(findRemoved(native1, native2));
+
+            zip1.close();
+            zip2.close();
+        } catch (IOException ex) {
+            // Best-effort: if ZIP scanning fails, dex/native diff fields remain empty
         }
 
         return result;
