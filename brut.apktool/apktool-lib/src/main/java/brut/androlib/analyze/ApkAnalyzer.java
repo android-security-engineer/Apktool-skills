@@ -646,4 +646,125 @@ public class ApkAnalyzer {
         result.put("framePackageIds", new ArrayList<>(table.getFramePackageIds()));
         return result;
     }
+
+    public Map<String, Object> getFileList() throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            java.util.zip.ZipFile zipFile = new java.util.zip.ZipFile(mApkFile.getAbsolutePath());
+            List<Map<String, Object>> entries = new ArrayList<>();
+            long totalSize = 0;
+            long totalCompressedSize = 0;
+
+            java.util.Enumeration<? extends java.util.zip.ZipEntry> e = zipFile.entries();
+            while (e.hasMoreElements()) {
+                java.util.zip.ZipEntry entry = e.nextElement();
+                Map<String, Object> entryInfo = new LinkedHashMap<>();
+                entryInfo.put("name", entry.getName());
+                entryInfo.put("size", entry.getSize());
+                entryInfo.put("compressedSize", entry.getCompressedSize());
+                entryInfo.put("directory", entry.isDirectory());
+                entries.add(entryInfo);
+                totalSize += entry.getSize();
+                totalCompressedSize += entry.getCompressedSize();
+            }
+
+            result.put("totalFiles", entries.size());
+            result.put("totalSize", totalSize);
+            result.put("totalCompressedSize", totalCompressedSize);
+            result.put("entries", entries);
+            zipFile.close();
+        } catch (IOException ex) {
+            throw new AndrolibException(ex);
+        }
+        return result;
+    }
+
+    public Map<String, String> getFileHash() throws AndrolibException {
+        Map<String, String> result = new LinkedHashMap<>();
+        try {
+            byte[] fileBytes = java.nio.file.Files.readAllBytes(mApkFile.toPath());
+            result.put("sha256", formatFingerprint(MessageDigest.getInstance("SHA-256").digest(fileBytes)));
+            result.put("sha1", formatFingerprint(MessageDigest.getInstance("SHA-1").digest(fileBytes)));
+            result.put("md5", formatFingerprint(MessageDigest.getInstance("MD5").digest(fileBytes)));
+            result.put("fileSize", String.valueOf(mApkFile.length()));
+            result.put("fileName", mApkFile.getName());
+        } catch (IOException | java.security.NoSuchAlgorithmException ex) {
+            throw new AndrolibException(ex);
+        }
+        return result;
+    }
+
+    public Map<String, Object> getClassDetail(String className) throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        String dexType = "L" + className.replace('.', '/') + ";";
+        ExtFile extFile = new ExtFile(mApkFile);
+
+        try {
+            com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer container =
+                new com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer(extFile, null);
+
+            for (String dexName : container.getDexEntryNames()) {
+                com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer.DexEntry<
+                    com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile> entry = container.getEntry(dexName);
+                if (entry == null) continue;
+
+                com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile dexFile = entry.getDexFile();
+                for (com.android.tools.smali.dexlib2.iface.ClassDef classDef : dexFile.getClasses()) {
+                    if (classDef.getType().equals(dexType)) {
+                        result.put("className", className);
+                        result.put("dexFile", dexName);
+                        result.put("superClass", classDef.getSuperclass() != null ?
+                            classDef.getSuperclass().substring(1, classDef.getSuperclass().length() - 1).replace('/', '.') : null);
+                        result.put("accessFlags", classDef.getAccessFlags());
+
+                        List<String> interfaces = new ArrayList<>();
+                        for (String iface : classDef.getInterfaces()) {
+                            interfaces.add(iface.substring(1, iface.length() - 1).replace('/', '.'));
+                        }
+                        result.put("interfaces", interfaces);
+
+                        List<Map<String, Object>> methods = new ArrayList<>();
+                        for (com.android.tools.smali.dexlib2.iface.Method method : classDef.getMethods()) {
+                            Map<String, Object> methodInfo = new LinkedHashMap<>();
+                            methodInfo.put("name", method.getName());
+                            methodInfo.put("accessFlags", method.getAccessFlags());
+                            methodInfo.put("returnType", method.getReturnType() != null ?
+                                method.getReturnType().substring(1, method.getReturnType().length() - 1).replace('/', '.') : null);
+                            List<String> paramTypes = new ArrayList<>();
+                            for (com.android.tools.smali.dexlib2.iface.MethodParameter param : method.getParameters()) {
+                                String pType = param.getType();
+                                paramTypes.add(pType.substring(1, pType.length() - 1).replace('/', '.'));
+                            }
+                            methodInfo.put("parameters", paramTypes);
+                            methods.add(methodInfo);
+                        }
+                        result.put("methods", methods);
+
+                        List<Map<String, Object>> fields = new ArrayList<>();
+                        for (com.android.tools.smali.dexlib2.iface.Field field : classDef.getFields()) {
+                            Map<String, Object> fieldInfo = new LinkedHashMap<>();
+                            fieldInfo.put("name", field.getName());
+                            fieldInfo.put("accessFlags", field.getAccessFlags());
+                            fieldInfo.put("type", field.getType() != null ?
+                                field.getType().substring(1, field.getType().length() - 1).replace('/', '.') : null);
+                            fields.add(fieldInfo);
+                        }
+                        result.put("fields", fields);
+
+                        result.put("methodCount", methods.size());
+                        result.put("fieldCount", fields.size());
+                        return result;
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            throw new AndrolibException(ex);
+        } finally {
+            try { extFile.close(); } catch (Exception ignored) {}
+        }
+
+        result.put("className", className);
+        result.put("error", "Class not found");
+        return result;
+    }
 }
