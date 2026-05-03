@@ -70,6 +70,8 @@ java -jar apktool.jar help --format json
 | `locales` | Supported locales | locale strings from resource table |
 | `native-libs` | Native libraries | architectures, libsByArch |
 | `dex-info` | Per-DEX statistics | classes, methods, fields per DEX |
+| `apk-info` | Decoded APK metadata | version, sdkInfo, usesFramework, featureFlags |
+| `resource-packages` | Resource package groups | packageGroups, packageGroupCount |
 | `analyze` | Comprehensive one-shot analysis | all of the above combined |
 
 ### Search Commands
@@ -127,6 +129,8 @@ java -jar apktool.jar ai app.apk -a context | jq '.'
 - `/api/v1/locales?apk=<path>` — Supported locales
 - `/api/v1/native-libs?apk=<path>` — Native libraries
 - `/api/v1/dex-info?apk=<path>` — Per-DEX statistics
+- `/api/v1/apk-info?dir=<path>` — Decoded APK metadata
+- `/api/v1/resource-packages?apk=<path>` — Resource package groups
 - `/api/v1/diff?apk1=<path>&apk2=<path>` — APK comparison
 - `/api/v1/list-frameworks` — List frameworks
 

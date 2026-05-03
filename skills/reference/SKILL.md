@@ -50,6 +50,8 @@ java -jar apktool.jar help --format json
 | `locales` | locale strings from resource table |
 | `native-libs` | architectures, libsByArch |
 | `dex-info` | classes, methods, fields per DEX |
+| `apk-info` | version, sdkInfo, usesFramework, featureFlags from decoded dir |
+| `resource-packages` | packageGroups, packageGroupCount |
 | `analyze` | all of the above combined |
 
 ## Search Commands
@@ -106,6 +108,8 @@ java -jar apktool.jar serve [-p <port>]
 - `GET /api/v1/locales?apk=<path>`
 - `GET /api/v1/native-libs?apk=<path>`
 - `GET /api/v1/dex-info?apk=<path>`
+- `GET /api/v1/apk-info?dir=<path>`
+- `GET /api/v1/resource-packages?apk=<path>`
 - `POST /api/v1/decode?apk=<path>&output=<dir>`
 - `POST /api/v1/build?dir=<path>&output=<apk>`
 - `POST /api/v1/install-framework?apk=<path>`
