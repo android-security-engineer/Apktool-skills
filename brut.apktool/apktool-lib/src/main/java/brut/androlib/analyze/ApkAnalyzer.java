@@ -296,6 +296,7 @@ public class ApkAnalyzer {
             summary.setPackageName(pkg.getName());
             summary.setPackageId(pkg.getId());
 
+            Set<String> localeSet = new LinkedHashSet<>();
             int total = 0;
             for (ResEntry entry : pkg.listEntries()) {
                 ResType type = entry.getType();
@@ -303,8 +304,17 @@ public class ApkAnalyzer {
                 Integer count = summary.getTypeCounts().get(typeName);
                 summary.getTypeCounts().put(typeName, count != null ? count + 1 : 1);
                 total++;
+
+                brut.androlib.res.table.ResConfig config = type.getConfig();
+                String lang = config.getLanguage();
+                String region = config.getRegion();
+                if (lang != null && !lang.isEmpty()) {
+                    String locale = region != null && !region.isEmpty() ? lang + "-r" + region : lang;
+                    localeSet.add(locale);
+                }
             }
             summary.setTotalEntries(total);
+            summary.setLocales(new ArrayList<>(localeSet));
         }
 
         return summary;
@@ -621,6 +631,19 @@ public class ApkAnalyzer {
         result.put("packageGroups", packageGroups);
         result.put("packageGroupCount", table.getPackageGroupCount());
 
+        return result;
+    }
+
+    public Map<String, Object> getLibFramePackageIds() throws AndrolibException {
+        ApkInfo apkInfo = new ApkInfo();
+        apkInfo.setApkFile(mApkFile);
+        ResDecoder resDecoder = new ResDecoder(apkInfo, mConfig);
+        ResTable table = resDecoder.getTable();
+        table.load();
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("libPackageIds", new ArrayList<>(table.getLibPackageIds()));
+        result.put("framePackageIds", new ArrayList<>(table.getFramePackageIds()));
         return result;
     }
 }

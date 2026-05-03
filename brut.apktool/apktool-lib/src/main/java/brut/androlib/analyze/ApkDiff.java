@@ -58,6 +58,12 @@ public class ApkDiff {
             if (!Objects.equals(m1.getTargetSdkVersion(), m2.getTargetSdkVersion())) {
                 result.setTargetSdkChange(m1.getTargetSdkVersion() + " -> " + m2.getTargetSdkVersion());
             }
+            if (!Objects.equals(m1.getMinSdkVersion(), m2.getMinSdkVersion())) {
+                result.setMinSdkChange(m1.getMinSdkVersion() + " -> " + m2.getMinSdkVersion());
+            }
+            if (!Objects.equals(m1.getPackageName(), m2.getPackageName())) {
+                result.setPackageNameChange(m1.getPackageName() + " -> " + m2.getPackageName());
+            }
         }
 
         // Compare DEX files and native libraries

@@ -1,5 +1,7 @@
 package brut.androlib.analyze;
 
+import java.util.Map;
+
 public class AnalyzeResult {
     private ApkSummary summary;
     private ManifestInfo manifest;
@@ -8,6 +10,8 @@ public class AnalyzeResult {
     private ResourceSummary resources;
     private SigningInfo signing;
     private StructureInfo structure;
+    private Map<String, Map<String, Integer>> dexInfo;
+    private Map<String, Object> nativeLibs;
 
     public ApkSummary getSummary() { return summary; }
     public void setSummary(ApkSummary summary) { this.summary = summary; }
@@ -23,4 +27,8 @@ public class AnalyzeResult {
     public void setSigning(SigningInfo signing) { this.signing = signing; }
     public StructureInfo getStructure() { return structure; }
     public void setStructure(StructureInfo structure) { this.structure = structure; }
+    public Map<String, Map<String, Integer>> getDexInfo() { return dexInfo; }
+    public void setDexInfo(Map<String, Map<String, Integer>> dexInfo) { this.dexInfo = dexInfo; }
+    public Map<String, Object> getNativeLibs() { return nativeLibs; }
+    public void setNativeLibs(Map<String, Object> nativeLibs) { this.nativeLibs = nativeLibs; }
 }

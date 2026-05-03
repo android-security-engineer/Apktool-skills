@@ -21,6 +21,8 @@ public class DiffResult {
     private String versionCodeChange;
     private String versionNameChange;
     private String targetSdkChange;
+    private String minSdkChange;
+    private String packageNameChange;
 
     public List<String> getAddedPermissions() { return addedPermissions; }
     public void setAddedPermissions(List<String> addedPermissions) { this.addedPermissions = addedPermissions; }
@@ -56,4 +58,8 @@ public class DiffResult {
     public void setVersionNameChange(String versionNameChange) { this.versionNameChange = versionNameChange; }
     public String getTargetSdkChange() { return targetSdkChange; }
     public void setTargetSdkChange(String targetSdkChange) { this.targetSdkChange = targetSdkChange; }
+    public String getMinSdkChange() { return minSdkChange; }
+    public void setMinSdkChange(String minSdkChange) { this.minSdkChange = minSdkChange; }
+    public String getPackageNameChange() { return packageNameChange; }
+    public void setPackageNameChange(String packageNameChange) { this.packageNameChange = packageNameChange; }
 }
