@@ -66,6 +66,10 @@ java -jar apktool.jar help --format json
 | `api-surface` | Exported components + intent filters | totalExportedComponents |
 | `signing` | APK signing certificate | subject, fingerprints, signing schemes |
 | `strings` | Extract strings from APK | all strings with pattern filter |
+| `dex-list` | List DEX files | dexCount, dexFiles |
+| `locales` | Supported locales | locale strings from resource table |
+| `native-libs` | Native libraries | architectures, libsByArch |
+| `dex-info` | Per-DEX statistics | classes, methods, fields per DEX |
 | `analyze` | Comprehensive one-shot analysis | all of the above combined |
 
 ### Search Commands
@@ -119,6 +123,10 @@ java -jar apktool.jar ai app.apk -a context | jq '.'
 - `/api/v1/ai?apk=<path>&action=<explain|security-review|summarize|context>` — AI prompts/context
 - `/api/v1/search?apk=<path>&type=<type>&pattern=<pattern>` — Search
 - `/api/v1/strings?apk=<path>&pattern=<pattern>` — String extraction
+- `/api/v1/dex-list?apk=<path>` — DEX file list
+- `/api/v1/locales?apk=<path>` — Supported locales
+- `/api/v1/native-libs?apk=<path>` — Native libraries
+- `/api/v1/dex-info?apk=<path>` — Per-DEX statistics
 - `/api/v1/diff?apk1=<path>&apk2=<path>` — APK comparison
 - `/api/v1/list-frameworks` — List frameworks
 

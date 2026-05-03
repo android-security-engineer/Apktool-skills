@@ -46,6 +46,10 @@ java -jar apktool.jar help --format json
 | `api-surface` | totalExportedComponents, intentFilters |
 | `signing` | subject, fingerprints, signing schemes |
 | `strings` | all strings from DEX and resources with pattern filter |
+| `dex-list` | dexCount, dexFiles |
+| `locales` | locale strings from resource table |
+| `native-libs` | architectures, libsByArch |
+| `dex-info` | classes, methods, fields per DEX |
 | `analyze` | all of the above combined |
 
 ## Search Commands
@@ -98,6 +102,10 @@ java -jar apktool.jar serve [-p <port>]
 - `GET /api/v1/search?apk=<path>&type=<type>&pattern=<pattern>`
 - `GET /api/v1/diff?apk1=<path>&apk2=<path>`
 - `GET /api/v1/strings?apk=<path>&pattern=<pattern>`
+- `GET /api/v1/dex-list?apk=<path>`
+- `GET /api/v1/locales?apk=<path>`
+- `GET /api/v1/native-libs?apk=<path>`
+- `GET /api/v1/dex-info?apk=<path>`
 - `POST /api/v1/decode?apk=<path>&output=<dir>`
 - `POST /api/v1/build?dir=<path>&output=<apk>`
 - `POST /api/v1/install-framework?apk=<path>`
