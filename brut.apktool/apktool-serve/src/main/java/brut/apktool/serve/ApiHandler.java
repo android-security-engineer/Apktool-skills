@@ -2,10 +2,14 @@ package brut.apktool.serve;
 
 import brut.androlib.Config;
 import brut.androlib.analyze.*;
+import brut.androlib.ApkDecoder;
+import brut.androlib.ApkBuilder;
+import brut.androlib.res.Framework;
 import brut.androlib.output.JsonOutput;
 import brut.androlib.search.ApkSearcher;
 import brut.androlib.search.SearchResult;
 import brut.androlib.ai.AiPromptBuilder;
+import brut.androlib.ai.AiContext;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -153,5 +157,98 @@ public class ApiHandler {
     public String handleResources(String apkPath) throws Exception {
         ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
         return JsonOutput.toJson(analyzer.getResourceSummary());
+    }
+
+    public String handleStrings(String apkPath, String pattern) throws Exception {
+        ApkSearcher searcher = new ApkSearcher(new File(apkPath), config);
+        SearchResult result = searcher.searchStrings(pattern);
+        return JsonOutput.toJson(result);
+    }
+
+    public String handleDecode(String apkPath, String outputDir) throws Exception {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            File apkFile = new File(apkPath);
+            File outDir = outputDir != null ? new File(outputDir) : new File(apkFile.getName().replace(".apk", ""));
+            ApkDecoder decoder = new ApkDecoder(apkFile, config);
+            decoder.decode(outDir);
+            result.put("status", "ok");
+            result.put("outputDir", outDir.getAbsolutePath());
+        } catch (Exception e) {
+            result.put("status", "error");
+            result.put("message", e.getMessage());
+        }
+        return JsonOutput.toJson(result);
+    }
+
+    public String handleBuild(String dirPath, String outputApk) throws Exception {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            File dir = new File(dirPath);
+            ApkBuilder builder = new ApkBuilder(dir, config);
+            File outApk = outputApk != null ? new File(outputApk) : new File(dir, "dist" + File.separator + dir.getName() + ".apk");
+            builder.build(outApk);
+            result.put("status", "ok");
+            result.put("inputDir", dir.getAbsolutePath());
+            result.put("outputApk", outApk.getAbsolutePath());
+        } catch (Exception e) {
+            result.put("status", "error");
+            result.put("message", e.getMessage());
+        }
+        return JsonOutput.toJson(result);
+    }
+
+    public String handleInstallFramework(String apkPath) throws Exception {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            Framework framework = new Framework(config);
+            framework.install(new File(apkPath));
+            result.put("status", "ok");
+            result.put("framework", apkPath);
+        } catch (Exception e) {
+            result.put("status", "error");
+            result.put("message", e.getMessage());
+        }
+        return JsonOutput.toJson(result);
+    }
+
+    public String handleCleanFrameworks() throws Exception {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            Framework framework = new Framework(config);
+            framework.cleanDirectory();
+            result.put("status", "ok");
+        } catch (Exception e) {
+            result.put("status", "error");
+            result.put("message", e.getMessage());
+        }
+        return JsonOutput.toJson(result);
+    }
+
+    public String handleListFrameworks() throws Exception {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            Framework framework = new Framework(config);
+            java.util.List<File> frameworks = framework.listDirectory();
+            result.put("frameworks", frameworks);
+        } catch (Exception e) {
+            result.put("status", "error");
+            result.put("message", e.getMessage());
+        }
+        return JsonOutput.toJson(result);
+    }
+
+    public String handlePublicizeResources(String arscPath) throws Exception {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            Framework framework = new Framework(config);
+            framework.publicizeResources(new File(arscPath));
+            result.put("status", "ok");
+            result.put("arsc", arscPath);
+        } catch (Exception e) {
+            result.put("status", "error");
+            result.put("message", e.getMessage());
+        }
+        return JsonOutput.toJson(result);
     }
 }

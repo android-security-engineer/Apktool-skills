@@ -97,3 +97,10 @@ java -jar apktool.jar serve [-p <port>]
 - `GET /api/v1/ai?apk=<path>&action=<explain|security-review|summarize>`
 - `GET /api/v1/search?apk=<path>&type=<type>&pattern=<pattern>`
 - `GET /api/v1/diff?apk1=<path>&apk2=<path>`
+- `GET /api/v1/strings?apk=<path>&pattern=<pattern>`
+- `POST /api/v1/decode?apk=<path>&output=<dir>`
+- `POST /api/v1/build?dir=<path>&output=<apk>`
+- `POST /api/v1/install-framework?apk=<path>`
+- `POST /api/v1/clean-frameworks`
+- `GET /api/v1/list-frameworks`
+- `POST /api/v1/publicize-resources?arsc=<path>`

@@ -94,7 +94,40 @@ All analysis commands output JSON to stdout. Use `jq` or similar tools to parse:
 java -jar apktool.jar info app.apk | jq '.packageName'
 java -jar apktool.jar security app.apk | jq '.riskScore'
 java -jar apktool.jar api-surface app.apk | jq '.exportedActivities[].name'
+java -jar apktool.jar ai app.apk -a context | jq '.'
 ```
+
+## HTTP API Endpoints (serve command)
+
+### Analysis Endpoints (GET)
+- `/api/v1/health` — Health check
+- `/api/v1/info?apk=<path>` — APK metadata
+- `/api/v1/manifest?apk=<path>` — AndroidManifest.xml
+- `/api/v1/permissions?apk=<path>` — Permissions list
+- `/api/v1/activities?apk=<path>` — Activities
+- `/api/v1/services?apk=<path>` — Services
+- `/api/v1/receivers?apk=<path>` — Broadcast receivers
+- `/api/v1/providers?apk=<path>` — Content providers
+- `/api/v1/components?apk=<path>` — All components
+- `/api/v1/sdk-info?apk=<path>` — SDK versions
+- `/api/v1/resources?apk=<path>` — Resource summary
+- `/api/v1/security?apk=<path>` — Security report
+- `/api/v1/api-surface?apk=<path>` — Exported components
+- `/api/v1/signing?apk=<path>` — Signing info
+- `/api/v1/structure?apk=<path>` — Code structure
+- `/api/v1/analyze?apk=<path>` — Full analysis
+- `/api/v1/ai?apk=<path>&action=<explain|security-review|summarize|context>` — AI prompts/context
+- `/api/v1/search?apk=<path>&type=<type>&pattern=<pattern>` — Search
+- `/api/v1/strings?apk=<path>&pattern=<pattern>` — String extraction
+- `/api/v1/diff?apk1=<path>&apk2=<path>` — APK comparison
+- `/api/v1/list-frameworks` — List frameworks
+
+### Operational Endpoints (POST)
+- `/api/v1/decode?apk=<path>&output=<dir>` — Decode APK
+- `/api/v1/build?dir=<path>&output=<apk>` — Build APK
+- `/api/v1/install-framework?apk=<path>` — Install framework
+- `/api/v1/clean-frameworks` — Clean frameworks
+- `/api/v1/publicize-resources?arsc=<path>` — Publicize resources
 
 ## Build
 

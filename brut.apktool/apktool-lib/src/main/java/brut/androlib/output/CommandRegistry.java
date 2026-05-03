@@ -115,9 +115,9 @@ public class CommandRegistry {
             "service", new String[]{"apktool serve", "apktool serve -p 9090"});
 
         // === AI Commands ===
-        register("ai", null, "Generate LLM-ready analysis prompts for AI-powered APK review",
-            "apktool ai <apk-file> -a <action>", "Text prompt for LLM (explain/security-review/summarize)",
-            "ai", new String[]{"apktool ai app.apk", "apktool ai app.apk -a security-review", "apktool ai app.apk -a summarize"});
+        register("ai", null, "Generate LLM-ready analysis prompts or structured context for AI-powered APK review",
+            "apktool ai <apk-file> -a <action>", "Text prompt (explain/security-review/summarize) or JSON context (context)",
+            "ai", new String[]{"apktool ai app.apk", "apktool ai app.apk -a security-review", "apktool ai app.apk -a summarize", "apktool ai app.apk -a context"});
 
         register("help", "h", "Show help information. Use --format json for AI-consumable output",
             "apktool help [--format json]", "Text help or JSON command catalog",

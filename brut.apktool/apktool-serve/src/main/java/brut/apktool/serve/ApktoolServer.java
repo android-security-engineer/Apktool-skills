@@ -38,6 +38,13 @@ public class ApktoolServer {
         app.get("/api/v1/ai", this::handleAi);
         app.get("/api/v1/search", this::handleSearch);
         app.get("/api/v1/diff", this::handleDiff);
+        app.get("/api/v1/strings", this::handleStrings);
+        app.post("/api/v1/decode", this::handleDecode);
+        app.post("/api/v1/build", this::handleBuild);
+        app.post("/api/v1/install-framework", this::handleInstallFramework);
+        app.post("/api/v1/clean-frameworks", this::handleCleanFrameworks);
+        app.get("/api/v1/list-frameworks", this::handleListFrameworks);
+        app.post("/api/v1/publicize-resources", this::handlePublicizeResources);
     }
 
     private void handleInfo(Context ctx) {
@@ -179,7 +186,12 @@ public class ApktoolServer {
         try {
             String apk = getRequiredParam(ctx, "apk");
             String action = ctx.queryParamAsClass("action", String.class).getOrDefault("explain");
-            ctx.contentType("text/plain").result(handler.handleAi(apk, action));
+            String result = handler.handleAi(apk, action);
+            if ("context".equals(action)) {
+                ctx.contentType("application/json").result(result);
+            } else {
+                ctx.contentType("text/plain").result(result);
+            }
         } catch (Exception e) {
             ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
         }
@@ -201,6 +213,70 @@ public class ApktoolServer {
             String apk1 = getRequiredParam(ctx, "apk1");
             String apk2 = getRequiredParam(ctx, "apk2");
             ctx.contentType("application/json").result(handler.handleDiff(apk1, apk2));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleStrings(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            String pattern = ctx.queryParamAsClass("pattern", String.class).getOrDefault(".*");
+            ctx.contentType("application/json").result(handler.handleStrings(apk, pattern));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleDecode(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            String outputDir = ctx.queryParam("output");
+            ctx.contentType("application/json").result(handler.handleDecode(apk, outputDir));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleBuild(Context ctx) {
+        try {
+            String dir = getRequiredParam(ctx, "dir");
+            String outputApk = ctx.queryParam("output");
+            ctx.contentType("application/json").result(handler.handleBuild(dir, outputApk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleInstallFramework(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleInstallFramework(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleCleanFrameworks(Context ctx) {
+        try {
+            ctx.contentType("application/json").result(handler.handleCleanFrameworks());
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleListFrameworks(Context ctx) {
+        try {
+            ctx.contentType("application/json").result(handler.handleListFrameworks());
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handlePublicizeResources(Context ctx) {
+        try {
+            String arsc = getRequiredParam(ctx, "arsc");
+            ctx.contentType("application/json").result(handler.handlePublicizeResources(arsc));
         } catch (Exception e) {
             ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
         }

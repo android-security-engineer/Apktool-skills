@@ -1099,6 +1099,10 @@ public class Main {
 
         String prompt;
         switch (action) {
+            case "context":
+                brut.androlib.ai.AiContext ctx = builder.buildContext();
+                System.out.println(brut.androlib.output.JsonOutput.toJson(ctx));
+                return;
             case "security-review":
                 prompt = builder.buildSecurityReviewPrompt();
                 break;
