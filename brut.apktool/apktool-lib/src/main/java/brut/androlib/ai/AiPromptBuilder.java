@@ -4,13 +4,16 @@ import brut.androlib.Config;
 import brut.androlib.analyze.ApkAnalyzer;
 import brut.androlib.analyze.ComponentInfo;
 import brut.androlib.analyze.ManifestInfo;
+import brut.androlib.analyze.ResourceSummary;
 import brut.androlib.analyze.SecurityReport;
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.output.JsonOutput;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AiPromptBuilder {
     private final File mApkFile;
@@ -43,11 +46,28 @@ public class AiPromptBuilder {
         SecurityReport report = analyzer.getSecurityReport();
         context.setSecurityReport(JsonOutput.toJson(report));
 
+        try {
+            context.setSigningInfo(JsonOutput.toJson(analyzer.getSigningInfo()));
+        } catch (Exception ignored) {}
+        try {
+            brut.androlib.analyze.ResourceSummary resSummary = analyzer.getResourceSummary();
+            context.setResourceSummary(JsonOutput.toJson(resSummary));
+        } catch (Exception ignored) {}
+        if (manifest != null) {
+            Map<String, String> sdkMap = new LinkedHashMap<>();
+            if (manifest.getMinSdkVersion() != null) sdkMap.put("minSdkVersion", manifest.getMinSdkVersion());
+            if (manifest.getTargetSdkVersion() != null) sdkMap.put("targetSdkVersion", manifest.getTargetSdkVersion());
+            context.setSdkInfo(JsonOutput.toJson(sdkMap));
+        }
+
         int totalChars = 0;
         if (context.getManifestXml() != null) totalChars += context.getManifestXml().length();
         totalChars += context.getPermissions().size() * 40;
         totalChars += context.getComponents().size() * 60;
         if (context.getSecurityReport() != null) totalChars += context.getSecurityReport().length();
+        if (context.getSigningInfo() != null) totalChars += context.getSigningInfo().length();
+        if (context.getSdkInfo() != null) totalChars += context.getSdkInfo().length();
+        if (context.getResourceSummary() != null) totalChars += context.getResourceSummary().length();
         context.setEstimatedTokenCount(totalChars / 4);
 
         return context;

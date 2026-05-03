@@ -195,6 +195,11 @@ public class ApiHandler {
         return JsonOutput.toJson(analyzer.getResourcePackages());
     }
 
+    public String handleLibFramePackages(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getLibFramePackageIds());
+    }
+
     public String handleDecode(String apkPath, String outputDir) throws Exception {
         Map<String, Object> result = new LinkedHashMap<>();
         try {

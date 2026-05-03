@@ -133,6 +133,10 @@ public class CommandRegistry {
             "apktool resource-packages <apk-file>", "JSON: {packageName, packageId, packageGroups[{id,name,basePackageName,subPackages}], packageGroupCount}",
             "analysis", new String[]{"apktool resource-packages app.apk"});
 
+        register("lib-frame-packages", null, "List shared library and framework package IDs from the resource table",
+            "apktool lib-frame-packages <apk-file>", "JSON: {libPackageIds[], framePackageIds[]}",
+            "analysis", new String[]{"apktool lib-frame-packages app.apk"});
+
         // === Service Commands ===
         register("serve", null, "Start HTTP API server for AI agent integration",
             "apktool serve [-p <port>]", "HTTP server on specified port (default 8080)",

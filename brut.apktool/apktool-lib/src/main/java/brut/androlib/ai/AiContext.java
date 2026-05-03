@@ -12,6 +12,9 @@ public class AiContext {
     private List<String> stringResources = new ArrayList<>();
     private String securityReport;
     private int estimatedTokenCount;
+    private String signingInfo;
+    private String sdkInfo;
+    private String resourceSummary;
 
     public String getApkFileName() { return apkFileName; }
     public void setApkFileName(String apkFileName) { this.apkFileName = apkFileName; }
@@ -29,4 +32,10 @@ public class AiContext {
     public void setSecurityReport(String securityReport) { this.securityReport = securityReport; }
     public int getEstimatedTokenCount() { return estimatedTokenCount; }
     public void setEstimatedTokenCount(int estimatedTokenCount) { this.estimatedTokenCount = estimatedTokenCount; }
+    public String getSigningInfo() { return signingInfo; }
+    public void setSigningInfo(String signingInfo) { this.signingInfo = signingInfo; }
+    public String getSdkInfo() { return sdkInfo; }
+    public void setSdkInfo(String sdkInfo) { this.sdkInfo = sdkInfo; }
+    public String getResourceSummary() { return resourceSummary; }
+    public void setResourceSummary(String resourceSummary) { this.resourceSummary = resourceSummary; }
 }
