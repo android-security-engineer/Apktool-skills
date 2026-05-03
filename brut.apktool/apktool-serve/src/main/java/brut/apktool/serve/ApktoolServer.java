@@ -43,6 +43,8 @@ public class ApktoolServer {
         app.get("/api/v1/locales", this::handleLocales);
         app.get("/api/v1/native-libs", this::handleNativeLibs);
         app.get("/api/v1/dex-info", this::handleDexInfo);
+        app.get("/api/v1/apk-info", this::handleApkInfo);
+        app.get("/api/v1/resource-packages", this::handleResourcePackages);
         app.post("/api/v1/decode", this::handleDecode);
         app.post("/api/v1/build", this::handleBuild);
         app.post("/api/v1/install-framework", this::handleInstallFramework);
@@ -263,6 +265,24 @@ public class ApktoolServer {
         try {
             String apk = getRequiredParam(ctx, "apk");
             ctx.contentType("application/json").result(handler.handleDexInfo(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleApkInfo(Context ctx) {
+        try {
+            String dir = getRequiredParam(ctx, "dir");
+            ctx.contentType("application/json").result(handler.handleApkInfo(dir));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleResourcePackages(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleResourcePackages(apk));
         } catch (Exception e) {
             ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
         }

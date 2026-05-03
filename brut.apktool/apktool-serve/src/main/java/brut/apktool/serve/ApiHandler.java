@@ -185,6 +185,16 @@ public class ApiHandler {
         return JsonOutput.toJson(analyzer.getDexInfo());
     }
 
+    public String handleApkInfo(String dirPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(dirPath), config);
+        return JsonOutput.toJson(analyzer.getDecodedApkInfo(new File(dirPath)));
+    }
+
+    public String handleResourcePackages(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getResourcePackages());
+    }
+
     public String handleDecode(String apkPath, String outputDir) throws Exception {
         Map<String, Object> result = new LinkedHashMap<>();
         try {

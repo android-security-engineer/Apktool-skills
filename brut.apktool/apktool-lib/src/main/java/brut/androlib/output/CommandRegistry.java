@@ -125,6 +125,14 @@ public class CommandRegistry {
             "apktool dex-info <apk-file>", "JSON: {dexName->{classes,methods,fields}}",
             "analysis", new String[]{"apktool dex-info app.apk"});
 
+        register("apk-info", null, "Read decoded APK metadata from apktool.yml in a decoded directory",
+            "apktool apk-info <decoded-dir>", "JSON: {version, apkFileName, usesFramework, usesLibrary, sdkInfo, versionInfo, resourcesInfo, featureFlags, doNotCompress, hasSources, hasManifest, hasResources}",
+            "analysis", new String[]{"apktool apk-info decoded_app_dir"});
+
+        register("resource-packages", null, "List resource package groups with IDs, names, and sub-packages",
+            "apktool resource-packages <apk-file>", "JSON: {packageName, packageId, packageGroups[{id,name,basePackageName,subPackages}], packageGroupCount}",
+            "analysis", new String[]{"apktool resource-packages app.apk"});
+
         // === Service Commands ===
         register("serve", null, "Start HTTP API server for AI agent integration",
             "apktool serve [-p <port>]", "HTTP server on specified port (default 8080)",

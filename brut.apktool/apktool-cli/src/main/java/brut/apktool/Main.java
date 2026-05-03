@@ -405,6 +405,12 @@ public class Main {
             case "dex-info":
                 cmdDexInfo(cmdArgs);
                 break;
+            case "apk-info":
+                cmdApkInfo(cmdArgs);
+                break;
+            case "resource-packages":
+                cmdResourcePackages(cmdArgs);
+                break;
             case "serve":
                 cmdServe(cmdArgs);
                 break;
@@ -1249,6 +1255,38 @@ public class Main {
         System.out.println(brut.androlib.output.JsonOutput.toJson(dexInfo));
     }
 
+    private static void cmdApkInfo(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input decoded directory was not specified.");
+            System.exit(1);
+            return;
+        }
+        String dirName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(dirName), config);
+        java.util.Map<String, Object> apkInfo = analyzer.getDecodedApkInfo(new File(dirName));
+        System.out.println(brut.androlib.output.JsonOutput.toJson(apkInfo));
+    }
+
+    private static void cmdResourcePackages(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> packages = analyzer.getResourcePackages();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(packages));
+    }
+
     private static void printOptionConflict(Option option, Option conflict) {
         System.err.println("Ignoring " + formatOption(option) + " (cannot be used with " + formatOption(conflict) + ")");
     }
@@ -1349,6 +1387,8 @@ public class Main {
         writer.println("  locales <apk>           - List supported locales from resource table");
         writer.println("  native-libs <apk>       - List native libraries per architecture");
         writer.println("  dex-info <apk>          - Per-DEX class/method/field statistics");
+        writer.println("  apk-info <dir>           - Read decoded APK metadata from apktool.yml");
+        writer.println("  resource-packages <apk>  - List resource package groups (IDs, names, sub-packages)");
             writer.println("  serve [-p <port>]       - Start HTTP API server (default: 8080)");
             writer.println("  ai <apk> -a <action>    - Generate LLM prompt (explain|security-review|summarize)");
             writer.println();
