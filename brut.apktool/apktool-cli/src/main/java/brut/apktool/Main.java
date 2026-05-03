@@ -411,6 +411,27 @@ public class Main {
             case "resource-packages":
                 cmdResourcePackages(cmdArgs);
                 break;
+            case "lib-frame-packages":
+                cmdLibFramePackages(cmdArgs);
+                break;
+            case "uses-libs":
+                cmdUsesLibs(cmdArgs);
+                break;
+            case "manifest-flags":
+                cmdManifestFlags(cmdArgs);
+                break;
+            case "version":
+                cmdVersion(cmdArgs);
+                break;
+            case "file-list":
+                cmdFileList(cmdArgs);
+                break;
+            case "file-hash":
+                cmdFileHash(cmdArgs);
+                break;
+            case "class-info":
+                cmdClassInfo(cmdArgs);
+                break;
             case "serve":
                 cmdServe(cmdArgs);
                 break;
@@ -1188,6 +1209,12 @@ public class Main {
             brut.androlib.analyze.ApkDiff.getStructure(apkFile, config);
         result.setStructure(structInfo);
 
+        analyzer = new brut.androlib.analyze.ApkAnalyzer(apkFile, config);
+        result.setDexInfo(analyzer.getDexInfo());
+
+        analyzer = new brut.androlib.analyze.ApkAnalyzer(apkFile, config);
+        result.setNativeLibs(analyzer.getNativeLibs());
+
         System.out.println(brut.androlib.output.JsonOutput.toJson(result));
     }
 
@@ -1285,6 +1312,136 @@ public class Main {
             new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
         java.util.Map<String, Object> packages = analyzer.getResourcePackages();
         System.out.println(brut.androlib.output.JsonOutput.toJson(packages));
+    }
+
+    private static void cmdLibFramePackages(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> packages = analyzer.getLibFramePackageIds();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(packages));
+    }
+
+    private static void cmdUsesLibs(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ManifestInfo manifest = analyzer.getManifestInfo();
+        if (manifest == null) {
+            System.out.println("[]");
+            return;
+        }
+        System.out.println(brut.androlib.output.JsonOutput.toJson(manifest.getUsesLibraries()));
+    }
+
+    private static void cmdManifestFlags(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ManifestInfo manifest = analyzer.getManifestInfo();
+        java.util.Map<String, Object> flags = new java.util.LinkedHashMap<>();
+        if (manifest != null) {
+            flags.put("debuggable", manifest.isDebuggable());
+            flags.put("allowBackup", manifest.isAllowBackup());
+            flags.put("usesCleartextTraffic", manifest.isUsesCleartextTraffic());
+            flags.put("networkSecurityConfig", manifest.getNetworkSecurityConfig());
+        }
+        System.out.println(brut.androlib.output.JsonOutput.toJson(flags));
+    }
+
+    private static void cmdVersion(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        brut.androlib.analyze.ManifestInfo manifest = analyzer.getManifestInfo();
+        java.util.Map<String, Object> version = new java.util.LinkedHashMap<>();
+        if (manifest != null) {
+            version.put("packageName", manifest.getPackageName());
+            version.put("versionCode", manifest.getVersionCode());
+            version.put("versionName", manifest.getVersionName());
+        }
+        System.out.println(brut.androlib.output.JsonOutput.toJson(version));
+    }
+
+    private static void cmdFileList(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> fileList = analyzer.getFileList();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(fileList));
+    }
+
+    private static void cmdFileHash(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, String> hash = analyzer.getFileHash();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(hash));
+    }
+
+    private static void cmdClassInfo(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        String className = argList.size() > 1 ? argList.get(1) : "";
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> classDetail = analyzer.getClassDetail(className);
+        System.out.println(brut.androlib.output.JsonOutput.toJson(classDetail));
     }
 
     private static void printOptionConflict(Option option, Option conflict) {
@@ -1389,6 +1546,7 @@ public class Main {
         writer.println("  dex-info <apk>          - Per-DEX class/method/field statistics");
         writer.println("  apk-info <dir>           - Read decoded APK metadata from apktool.yml");
         writer.println("  resource-packages <apk>  - List resource package groups (IDs, names, sub-packages)");
+        writer.println("  lib-frame-packages <apk> - List shared library and framework package IDs");
             writer.println("  serve [-p <port>]       - Start HTTP API server (default: 8080)");
             writer.println("  ai <apk> -a <action>    - Generate LLM prompt (explain|security-review|summarize)");
             writer.println();

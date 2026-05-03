@@ -137,6 +137,30 @@ public class CommandRegistry {
             "apktool lib-frame-packages <apk-file>", "JSON: {libPackageIds[], framePackageIds[]}",
             "analysis", new String[]{"apktool lib-frame-packages app.apk"});
 
+        register("uses-libs", null, "List shared libraries declared in AndroidManifest.xml",
+            "apktool uses-libs <apk-file>", "JSON array of library names",
+            "analysis", new String[]{"apktool uses-libs app.apk"});
+
+        register("manifest-flags", null, "Get manifest security flags: debuggable, allowBackup, cleartext traffic, network security config",
+            "apktool manifest-flags <apk-file>", "JSON: {debuggable, allowBackup, usesCleartextTraffic, networkSecurityConfig}",
+            "analysis", new String[]{"apktool manifest-flags app.apk"});
+
+        register("version", null, "Get APK version information: package name, version code, version name",
+            "apktool version <apk-file>", "JSON: {packageName, versionCode, versionName}",
+            "analysis", new String[]{"apktool version app.apk"});
+
+        register("file-list", null, "List all files in the APK with sizes and compression info",
+            "apktool file-list <apk-file>", "JSON: {totalFiles, totalSize, totalCompressedSize, entries[{name,size,compressedSize,directory}]}",
+            "analysis", new String[]{"apktool file-list app.apk"});
+
+        register("file-hash", null, "Calculate SHA-256, SHA-1, and MD5 hash of the APK file",
+            "apktool file-hash <apk-file>", "JSON: {sha256, sha1, md5, fileSize, fileName}",
+            "analysis", new String[]{"apktool file-hash app.apk"});
+
+        register("class-info", null, "Get detailed info about a DEX class: methods, fields, superclass, interfaces",
+            "apktool class-info <apk-file> <class-name>", "JSON: {className, superClass, accessFlags, interfaces[], methods[{name,accessFlags,returnType,parameters[]}], fields[{name,accessFlags,type}]}",
+            "analysis", new String[]{"apktool class-info app.apk com.example.MyActivity"});
+
         // === Service Commands ===
         register("serve", null, "Start HTTP API server for AI agent integration",
             "apktool serve [-p <port>]", "HTTP server on specified port (default 8080)",

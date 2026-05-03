@@ -200,6 +200,53 @@ public class ApiHandler {
         return JsonOutput.toJson(analyzer.getLibFramePackageIds());
     }
 
+    public String handleUsesLibs(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        ManifestInfo manifest = analyzer.getManifestInfo();
+        if (manifest == null) return "[]";
+        return JsonOutput.toJson(manifest.getUsesLibraries());
+    }
+
+    public String handleManifestFlags(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        ManifestInfo manifest = analyzer.getManifestInfo();
+        Map<String, Object> flags = new LinkedHashMap<>();
+        if (manifest != null) {
+            flags.put("debuggable", manifest.isDebuggable());
+            flags.put("allowBackup", manifest.isAllowBackup());
+            flags.put("usesCleartextTraffic", manifest.isUsesCleartextTraffic());
+            flags.put("networkSecurityConfig", manifest.getNetworkSecurityConfig());
+        }
+        return JsonOutput.toJson(flags);
+    }
+
+    public String handleVersion(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        ManifestInfo manifest = analyzer.getManifestInfo();
+        Map<String, Object> version = new LinkedHashMap<>();
+        if (manifest != null) {
+            version.put("packageName", manifest.getPackageName());
+            version.put("versionCode", manifest.getVersionCode());
+            version.put("versionName", manifest.getVersionName());
+        }
+        return JsonOutput.toJson(version);
+    }
+
+    public String handleFileList(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getFileList());
+    }
+
+    public String handleFileHash(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getFileHash());
+    }
+
+    public String handleClassInfo(String apkPath, String className) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getClassDetail(className));
+    }
+
     public String handleDecode(String apkPath, String outputDir) throws Exception {
         Map<String, Object> result = new LinkedHashMap<>();
         try {

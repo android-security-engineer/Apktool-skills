@@ -46,6 +46,12 @@ public class ApktoolServer {
         app.get("/api/v1/apk-info", this::handleApkInfo);
         app.get("/api/v1/resource-packages", this::handleResourcePackages);
         app.get("/api/v1/lib-frame-packages", this::handleLibFramePackages);
+        app.get("/api/v1/uses-libs", this::handleUsesLibs);
+        app.get("/api/v1/manifest-flags", this::handleManifestFlags);
+        app.get("/api/v1/version", this::handleVersion);
+        app.get("/api/v1/file-list", this::handleFileList);
+        app.get("/api/v1/file-hash", this::handleFileHash);
+        app.get("/api/v1/class-info", this::handleClassInfo);
         app.post("/api/v1/decode", this::handleDecode);
         app.post("/api/v1/build", this::handleBuild);
         app.post("/api/v1/install-framework", this::handleInstallFramework);
@@ -293,6 +299,61 @@ public class ApktoolServer {
         try {
             String apk = getRequiredParam(ctx, "apk");
             ctx.contentType("application/json").result(handler.handleLibFramePackages(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleUsesLibs(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleUsesLibs(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleManifestFlags(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleManifestFlags(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleVersion(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleVersion(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleFileList(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleFileList(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleFileHash(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleFileHash(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleClassInfo(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            String className = getRequiredParam(ctx, "class");
+            ctx.contentType("application/json").result(handler.handleClassInfo(apk, className));
         } catch (Exception e) {
             ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
         }
