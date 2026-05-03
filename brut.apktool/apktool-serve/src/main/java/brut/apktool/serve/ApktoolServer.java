@@ -39,6 +39,10 @@ public class ApktoolServer {
         app.get("/api/v1/search", this::handleSearch);
         app.get("/api/v1/diff", this::handleDiff);
         app.get("/api/v1/strings", this::handleStrings);
+        app.get("/api/v1/dex-list", this::handleDexList);
+        app.get("/api/v1/locales", this::handleLocales);
+        app.get("/api/v1/native-libs", this::handleNativeLibs);
+        app.get("/api/v1/dex-info", this::handleDexInfo);
         app.post("/api/v1/decode", this::handleDecode);
         app.post("/api/v1/build", this::handleBuild);
         app.post("/api/v1/install-framework", this::handleInstallFramework);
@@ -223,6 +227,42 @@ public class ApktoolServer {
             String apk = getRequiredParam(ctx, "apk");
             String pattern = ctx.queryParamAsClass("pattern", String.class).getOrDefault(".*");
             ctx.contentType("application/json").result(handler.handleStrings(apk, pattern));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleDexList(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleDexList(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleLocales(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleLocales(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleNativeLibs(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleNativeLibs(apk));
+        } catch (Exception e) {
+            ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
+        }
+    }
+
+    private void handleDexInfo(Context ctx) {
+        try {
+            String apk = getRequiredParam(ctx, "apk");
+            ctx.contentType("application/json").result(handler.handleDexInfo(apk));
         } catch (Exception e) {
             ctx.status(500).result("{\"error\":\"" + escapeJson(e.getMessage()) + "\"}");
         }
