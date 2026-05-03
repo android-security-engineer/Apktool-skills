@@ -73,6 +73,12 @@ java -jar apktool.jar help --format json
 | `apk-info` | Decoded APK metadata | version, sdkInfo, usesFramework, featureFlags |
 | `resource-packages` | Resource package groups | packageGroups, packageGroupCount |
 | `lib-frame-packages` | Shared library and framework package IDs | libPackageIds, framePackageIds |
+| `uses-libs` | Shared libraries used | usesLibraries[] |
+| `manifest-flags` | Manifest security flags | debuggable, allowBackup, usesCleartextTraffic, networkSecurityConfig |
+| `version` | APK version info | packageName, versionCode, versionName |
+| `file-list` | APK file listing | totalFiles, totalSize, entries[] |
+| `file-hash` | APK file hashes | sha256, sha1, md5 |
+| `class-info` | DEX class details | superClass, methods[], fields[], interfaces[] |
 | `analyze` | Comprehensive one-shot analysis | all of the above combined |
 
 ### Search Commands
@@ -133,6 +139,12 @@ java -jar apktool.jar ai app.apk -a context | jq '.'
 - `/api/v1/apk-info?dir=<path>` — Decoded APK metadata
 - `/api/v1/resource-packages?apk=<path>` — Resource package groups
 - `/api/v1/lib-frame-packages?apk=<path>` — Shared library and framework package IDs
+- `/api/v1/uses-libs?apk=<path>` — Shared libraries used
+- `/api/v1/manifest-flags?apk=<path>` — Manifest security flags
+- `/api/v1/version?apk=<path>` — APK version info
+- `/api/v1/file-list?apk=<path>` — APK file listing
+- `/api/v1/file-hash?apk=<path>` — APK file hashes
+- `/api/v1/class-info?apk=<path>&class=<name>` — DEX class details
 - `/api/v1/diff?apk1=<path>&apk2=<path>` — APK comparison
 - `/api/v1/list-frameworks` — List frameworks
 

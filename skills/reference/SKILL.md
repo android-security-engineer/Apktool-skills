@@ -53,6 +53,12 @@ java -jar apktool.jar help --format json
 | `apk-info` | version, sdkInfo, usesFramework, featureFlags from decoded dir |
 | `resource-packages` | packageGroups, packageGroupCount |
 | `lib-frame-packages` | libPackageIds, framePackageIds |
+| `uses-libs` | usesLibraries[] |
+| `manifest-flags` | debuggable, allowBackup, usesCleartextTraffic, networkSecurityConfig |
+| `version` | packageName, versionCode, versionName |
+| `file-list` | totalFiles, totalSize, entries[] |
+| `file-hash` | sha256, sha1, md5 |
+| `class-info` | superClass, methods[], fields[], interfaces[] |
 | `analyze` | all of the above combined |
 
 ## Search Commands
@@ -112,6 +118,12 @@ java -jar apktool.jar serve [-p <port>]
 - `GET /api/v1/apk-info?dir=<path>`
 - `GET /api/v1/resource-packages?apk=<path>`
 - `GET /api/v1/lib-frame-packages?apk=<path>`
+- `GET /api/v1/uses-libs?apk=<path>`
+- `GET /api/v1/manifest-flags?apk=<path>`
+- `GET /api/v1/version?apk=<path>`
+- `GET /api/v1/file-list?apk=<path>`
+- `GET /api/v1/file-hash?apk=<path>`
+- `GET /api/v1/class-info?apk=<path>&class=<name>`
 - `POST /api/v1/decode?apk=<path>&output=<dir>`
 - `POST /api/v1/build?dir=<path>&output=<apk>`
 - `POST /api/v1/install-framework?apk=<path>`
