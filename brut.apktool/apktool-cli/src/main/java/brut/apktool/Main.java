@@ -393,6 +393,18 @@ public class Main {
             case "structure":
                 cmdStructure(cmdArgs);
                 break;
+            case "dex-list":
+                cmdDexList(cmdArgs);
+                break;
+            case "locales":
+                cmdLocales(cmdArgs);
+                break;
+            case "native-libs":
+                cmdNativeLibs(cmdArgs);
+                break;
+            case "dex-info":
+                cmdDexInfo(cmdArgs);
+                break;
             case "serve":
                 cmdServe(cmdArgs);
                 break;
@@ -1173,6 +1185,70 @@ public class Main {
         System.out.println(brut.androlib.output.JsonOutput.toJson(result));
     }
 
+    private static void cmdDexList(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> dexList = analyzer.getDexList();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(dexList));
+    }
+
+    private static void cmdLocales(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.List<String> locales = analyzer.getLocales();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(locales));
+    }
+
+    private static void cmdNativeLibs(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> nativeLibs = analyzer.getNativeLibs();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(nativeLibs));
+    }
+
+    private static void cmdDexInfo(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, java.util.Map<String, Integer>> dexInfo = analyzer.getDexInfo();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(dexInfo));
+    }
+
     private static void printOptionConflict(Option option, Option conflict) {
         System.err.println("Ignoring " + formatOption(option) + " (cannot be used with " + formatOption(conflict) + ")");
     }
@@ -1269,6 +1345,10 @@ public class Main {
             writer.println("  search <apk> [pat] -t T - Search strings/classes/methods by regex");
             writer.println("  diff <apk1> <apk2>      - Compare two APKs (permissions, components, versions)");
             writer.println("  structure <apk>         - Code structure overview (classes, methods, packages)");
+        writer.println("  dex-list <apk>          - List all DEX files in the APK");
+        writer.println("  locales <apk>           - List supported locales from resource table");
+        writer.println("  native-libs <apk>       - List native libraries per architecture");
+        writer.println("  dex-info <apk>          - Per-DEX class/method/field statistics");
             writer.println("  serve [-p <port>]       - Start HTTP API server (default: 8080)");
             writer.println("  ai <apk> -a <action>    - Generate LLM prompt (explain|security-review|summarize)");
             writer.println();

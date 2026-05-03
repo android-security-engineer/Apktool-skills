@@ -109,6 +109,22 @@ public class CommandRegistry {
             "apktool analyze <apk-file>", "JSON: {summary, manifest, security, apiSurface, resources, signing, structure}",
             "analysis", new String[]{"apktool analyze app.apk"});
 
+        register("dex-list", null, "List all DEX files in the APK with count",
+            "apktool dex-list <apk-file>", "JSON: {dexCount, dexFiles[]}",
+            "analysis", new String[]{"apktool dex-list app.apk"});
+
+        register("locales", null, "List all supported locales/regions from the resource table",
+            "apktool locales <apk-file>", "JSON array of locale strings",
+            "analysis", new String[]{"apktool locales app.apk"});
+
+        register("native-libs", null, "List native libraries per architecture with file names",
+            "apktool native-libs <apk-file>", "JSON: {hasNativeLibs, architectures[], libsByArch{arch->[libs]}}",
+            "analysis", new String[]{"apktool native-libs app.apk"});
+
+        register("dex-info", null, "Get per-DEX class/method/field statistics",
+            "apktool dex-info <apk-file>", "JSON: {dexName->{classes,methods,fields}}",
+            "analysis", new String[]{"apktool dex-info app.apk"});
+
         // === Service Commands ===
         register("serve", null, "Start HTTP API server for AI agent integration",
             "apktool serve [-p <port>]", "HTTP server on specified port (default 8080)",
