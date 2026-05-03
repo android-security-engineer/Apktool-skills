@@ -3,7 +3,9 @@ package brut.androlib.analyze;
 import brut.androlib.Config;
 import brut.androlib.exceptions.AndrolibException;
 import brut.androlib.meta.ApkInfo;
+import brut.androlib.meta.ResourcesInfo;
 import brut.androlib.meta.SdkInfo;
+import brut.androlib.meta.UsesFramework;
 import brut.androlib.meta.VersionInfo;
 import brut.androlib.res.ResDecoder;
 import brut.androlib.res.decoder.BinaryXmlResourceParser;
@@ -11,6 +13,7 @@ import brut.androlib.res.decoder.ManifestPullEventHandler;
 import brut.androlib.res.decoder.ResXmlPullStreamDecoder;
 import brut.androlib.res.table.ResEntry;
 import brut.androlib.res.table.ResPackage;
+import brut.androlib.res.table.ResPackageGroup;
 import brut.androlib.res.table.ResTable;
 import brut.androlib.res.table.ResType;
 import brut.androlib.res.xml.ResXmlSerializer;
@@ -529,6 +532,95 @@ public class ApkAnalyzer {
         } finally {
             try { extFile.close(); } catch (Exception ignored) {}
         }
+        return result;
+    }
+
+    public Map<String, Object> getDecodedApkInfo(File decodedDir) throws AndrolibException {
+        ApkInfo apkInfo = ApkInfo.load(decodedDir);
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("version", apkInfo.getVersion());
+        result.put("apkFileName", apkInfo.getApkFileName());
+
+        UsesFramework usesFramework = apkInfo.getUsesFramework();
+        Map<String, Object> frameworkInfo = new LinkedHashMap<>();
+        frameworkInfo.put("ids", usesFramework.getIds());
+        frameworkInfo.put("tag", usesFramework.getTag());
+        result.put("usesFramework", frameworkInfo);
+
+        result.put("usesLibrary", apkInfo.getUsesLibrary());
+
+        SdkInfo sdkInfo = apkInfo.getSdkInfo();
+        Map<String, String> sdkMap = new LinkedHashMap<>();
+        if (sdkInfo.getMinSdkVersion() != null) sdkMap.put("minSdkVersion", sdkInfo.getMinSdkVersion());
+        if (sdkInfo.getTargetSdkVersion() != null) sdkMap.put("targetSdkVersion", sdkInfo.getTargetSdkVersion());
+        if (sdkInfo.getMaxSdkVersion() != null) sdkMap.put("maxSdkVersion", sdkInfo.getMaxSdkVersion());
+        result.put("sdkInfo", sdkMap);
+
+        VersionInfo versionInfo = apkInfo.getVersionInfo();
+        Map<String, Object> versionMap = new LinkedHashMap<>();
+        versionMap.put("versionCode", versionInfo.getVersionCode());
+        versionMap.put("versionName", versionInfo.getVersionName());
+        result.put("versionInfo", versionMap);
+
+        ResourcesInfo resourcesInfo = apkInfo.getResourcesInfo();
+        Map<String, Object> resourcesMap = new LinkedHashMap<>();
+        resourcesMap.put("packageId", resourcesInfo.getPackageId());
+        resourcesMap.put("packageName", resourcesInfo.getPackageName());
+        resourcesMap.put("sparseEntries", resourcesInfo.isSparseEntries());
+        resourcesMap.put("compactEntries", resourcesInfo.isCompactEntries());
+        resourcesMap.put("keepRawValues", resourcesInfo.isKeepRawValues());
+        result.put("resourcesInfo", resourcesMap);
+
+        result.put("featureFlags", apkInfo.getFeatureFlags());
+        result.put("doNotCompress", apkInfo.getDoNotCompress());
+
+        try {
+            result.put("hasSources", apkInfo.hasSources());
+            result.put("hasManifest", apkInfo.hasManifest());
+            result.put("hasResources", apkInfo.hasResources());
+        } catch (AndrolibException ignored) {}
+
+        return result;
+    }
+
+    public Map<String, Object> getResourcePackages() throws AndrolibException {
+        ResourceSummary summary = getResourceSummary();
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("packageName", summary.getPackageName());
+        result.put("packageId", summary.getPackageId());
+        result.put("totalEntries", summary.getTotalEntries());
+        result.put("typeCounts", summary.getTypeCounts());
+        result.put("locales", summary.getLocales());
+
+        ApkInfo apkInfo = new ApkInfo();
+        apkInfo.setApkFile(mApkFile);
+        ResDecoder resDecoder = new ResDecoder(apkInfo, mConfig);
+        ResTable table = resDecoder.getTable();
+        table.load();
+
+        List<Map<String, Object>> packageGroups = new ArrayList<>();
+        for (ResPackageGroup group : table.listPackageGroups()) {
+            Map<String, Object> groupInfo = new LinkedHashMap<>();
+            groupInfo.put("id", group.getId());
+            groupInfo.put("name", group.getName());
+            ResPackage basePkg = group.getBasePackage();
+            if (basePkg != null) {
+                groupInfo.put("basePackageName", basePkg.getName());
+                groupInfo.put("basePackageId", basePkg.getId());
+            }
+            List<Map<String, Object>> subPackages = new ArrayList<>();
+            for (ResPackage subPkg : group.listSubPackages()) {
+                Map<String, Object> subInfo = new LinkedHashMap<>();
+                subInfo.put("name", subPkg.getName());
+                subInfo.put("id", subPkg.getId());
+                subPackages.add(subInfo);
+            }
+            groupInfo.put("subPackages", subPackages);
+            packageGroups.add(groupInfo);
+        }
+        result.put("packageGroups", packageGroups);
+        result.put("packageGroupCount", table.getPackageGroupCount());
+
         return result;
     }
 }
