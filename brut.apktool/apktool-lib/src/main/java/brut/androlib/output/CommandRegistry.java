@@ -161,6 +161,38 @@ public class CommandRegistry {
             "apktool class-info <apk-file> <class-name>", "JSON: {className, superClass, accessFlags, interfaces[], methods[{name,accessFlags,returnType,parameters[]}], fields[{name,accessFlags,type}]}",
             "analysis", new String[]{"apktool class-info app.apk com.example.MyActivity"});
 
+        register("class-list", null, "List all class names from DEX files",
+            "apktool class-list <apk-file>", "JSON: {totalClasses, classes[]}",
+            "analysis", new String[]{"apktool class-list app.apk"});
+
+        register("method-search", null, "Search method signatures by regex pattern with full type info",
+            "apktool method-search <apk-file> [-p <pattern>]", "JSON: {totalMatches, methods[{className, methodName, returnType, parameters[], accessFlags}]}",
+            "analysis", new String[]{"apktool method-search app.apk -p 'onCreate'", "apktool method-search app.apk"});
+
+        register("field-search", null, "Search field names by regex pattern with type info",
+            "apktool field-search <apk-file> [-p <pattern>]", "JSON: {totalMatches, fields[{className, fieldName, type, accessFlags}]}",
+            "analysis", new String[]{"apktool field-search app.apk -p 'mContext'", "apktool field-search app.apk"});
+
+        register("asset-list", null, "List all files in the assets/ directory",
+            "apktool asset-list <apk-file>", "JSON: {hasAssets, totalAssets, assets[]}",
+            "analysis", new String[]{"apktool asset-list app.apk"});
+
+        register("dex-strings", null, "Extract all strings from DEX files (not resources)",
+            "apktool dex-strings <apk-file>", "JSON: {totalStrings, strings[]}",
+            "analysis", new String[]{"apktool dex-strings app.apk"});
+
+        register("permission-detail", null, "Get detailed permission analysis with danger level and category classification",
+            "apktool permission-detail <apk-file>", "JSON: {totalPermissions, dangerousCount, normalCount, customCount, permissions[{name, dangerous, category}]}",
+            "analysis", new String[]{"apktool permission-detail app.apk"});
+
+        register("inheritance", null, "Get class inheritance chain (superclass hierarchy) for a given class",
+            "apktool inheritance <apk-file> <class-name>", "JSON: {className, inheritanceChain[]}",
+            "analysis", new String[]{"apktool inheritance app.apk com.example.MyActivity"});
+
+        register("manifest-xml", null, "Get the full decoded AndroidManifest.xml as text (for AI context)",
+            "apktool manifest-xml <apk-file>", "JSON: {manifestXml}",
+            "analysis", new String[]{"apktool manifest-xml app.apk"});
+
         // === Service Commands ===
         register("serve", null, "Start HTTP API server for AI agent integration",
             "apktool serve [-p <port>]", "HTTP server on specified port (default 8080)",

@@ -420,7 +420,7 @@ public class Main {
             case "manifest-flags":
                 cmdManifestFlags(cmdArgs);
                 break;
-            case "version":
+            case "apk-version":
                 cmdVersion(cmdArgs);
                 break;
             case "file-list":
@@ -437,6 +437,30 @@ public class Main {
                 break;
             case "ai":
                 cmdAi(cmdArgs);
+                break;
+            case "class-list":
+                cmdClassList(cmdArgs);
+                break;
+            case "method-search":
+                cmdMethodSearch(cmdArgs);
+                break;
+            case "field-search":
+                cmdFieldSearch(cmdArgs);
+                break;
+            case "asset-list":
+                cmdAssetList(cmdArgs);
+                break;
+            case "dex-strings":
+                cmdDexStrings(cmdArgs);
+                break;
+            case "permission-detail":
+                cmdPermissionDetail(cmdArgs);
+                break;
+            case "inheritance":
+                cmdInheritance(cmdArgs);
+                break;
+            case "manifest-xml":
+                cmdManifestXml(cmdArgs);
                 break;
             case "h":
             case "help":
@@ -1442,6 +1466,141 @@ public class Main {
             new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
         java.util.Map<String, Object> classDetail = analyzer.getClassDetail(className);
         System.out.println(brut.androlib.output.JsonOutput.toJson(classDetail));
+    }
+
+    private static void cmdClassList(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> classList = analyzer.getClassList();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(classList));
+    }
+
+    private static final Option methodSearchPatternOption = Option.builder("p")
+        .longOpt("pattern")
+        .desc("Search pattern (regex). (default: .*)")
+        .hasArg()
+        .argName("pattern")
+        .get();
+    private static final Options methodSearchOptions = new Options();
+
+    private static void cmdMethodSearch(String[] args) throws AndrolibException {
+        methodSearchOptions.addOption(methodSearchPatternOption);
+        CommandLine cli = parseOptions(methodSearchOptions, args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        String pattern = cli.getOptionValue(methodSearchPatternOption, ".*");
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> methods = analyzer.getMethodSearch(pattern);
+        System.out.println(brut.androlib.output.JsonOutput.toJson(methods));
+    }
+
+    private static final Options fieldSearchOptions = new Options();
+
+    private static void cmdFieldSearch(String[] args) throws AndrolibException {
+        fieldSearchOptions.addOption(methodSearchPatternOption);
+        CommandLine cli = parseOptions(fieldSearchOptions, args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        String pattern = cli.getOptionValue(methodSearchPatternOption, ".*");
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> fields = analyzer.getFieldSearch(pattern);
+        System.out.println(brut.androlib.output.JsonOutput.toJson(fields));
+    }
+
+    private static void cmdAssetList(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> assets = analyzer.getAssetList();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(assets));
+    }
+
+    private static void cmdDexStrings(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> dexStrings = analyzer.getDexStrings();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(dexStrings));
+    }
+
+    private static void cmdPermissionDetail(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> permDetail = analyzer.getPermissionDetail();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(permDetail));
+    }
+
+    private static void cmdInheritance(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        String className = argList.size() > 1 ? argList.get(1) : "";
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> inheritance = analyzer.getInheritanceInfo(className);
+        System.out.println(brut.androlib.output.JsonOutput.toJson(inheritance));
+    }
+
+    private static void cmdManifestXml(String[] args) throws AndrolibException {
+        CommandLine cli = parseOptions(new Options(), args);
+        List<String> argList = cli.getArgList();
+        if (argList.isEmpty()) {
+            System.err.println("Input apk file was not specified.");
+            System.exit(1);
+            return;
+        }
+        String apkName = argList.get(0);
+        brut.androlib.analyze.ApkAnalyzer analyzer =
+            new brut.androlib.analyze.ApkAnalyzer(new File(apkName), config);
+        java.util.Map<String, Object> manifestXml = analyzer.getManifestXml();
+        System.out.println(brut.androlib.output.JsonOutput.toJson(manifestXml));
     }
 
     private static void printOptionConflict(Option option, Option conflict) {

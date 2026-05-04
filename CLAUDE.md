@@ -76,9 +76,18 @@ java -jar apktool.jar help --format json
 | `uses-libs` | Shared libraries used | usesLibraries[] |
 | `manifest-flags` | Manifest security flags | debuggable, allowBackup, usesCleartextTraffic, networkSecurityConfig |
 | `version` | APK version info | packageName, versionCode, versionName |
+| `apk-version` | APK version info (alias) | packageName, versionCode, versionName |
 | `file-list` | APK file listing | totalFiles, totalSize, entries[] |
 | `file-hash` | APK file hashes | sha256, sha1, md5 |
 | `class-info` | DEX class details | superClass, methods[], fields[], interfaces[] |
+| `class-list` | List all DEX class names | totalClasses, classes[] |
+| `method-search` | Search method signatures by regex | totalMatches, methods[{className, methodName, returnType}] |
+| `field-search` | Search field names by regex | totalMatches, fields[{className, fieldName, type}] |
+| `asset-list` | List assets/ directory files | hasAssets, totalAssets, assets[] |
+| `dex-strings` | Extract all DEX strings | totalStrings, strings[] |
+| `permission-detail` | Permission danger level analysis | dangerousCount, normalCount, customCount, permissions[] |
+| `inheritance` | Class inheritance chain | className, inheritanceChain[] |
+| `manifest-xml` | Full decoded AndroidManifest.xml text | manifestXml |
 | `analyze` | Comprehensive one-shot analysis | all of the above combined |
 
 ### Search Commands
@@ -145,6 +154,14 @@ java -jar apktool.jar ai app.apk -a context | jq '.'
 - `/api/v1/file-list?apk=<path>` — APK file listing
 - `/api/v1/file-hash?apk=<path>` — APK file hashes
 - `/api/v1/class-info?apk=<path>&class=<name>` — DEX class details
+- `/api/v1/class-list?apk=<path>` — List all class names
+- `/api/v1/method-search?apk=<path>&pattern=<pattern>` — Search method signatures
+- `/api/v1/field-search?apk=<path>&pattern=<pattern>` — Search field names
+- `/api/v1/asset-list?apk=<path>` — List assets directory
+- `/api/v1/dex-strings?apk=<path>` — Extract DEX strings
+- `/api/v1/permission-detail?apk=<path>` — Detailed permission analysis
+- `/api/v1/inheritance?apk=<path>&class=<name>` — Class inheritance chain
+- `/api/v1/manifest-xml?apk=<path>` — Full decoded manifest XML
 - `/api/v1/diff?apk1=<path>&apk2=<path>` — APK comparison
 - `/api/v1/list-frameworks` — List frameworks
 

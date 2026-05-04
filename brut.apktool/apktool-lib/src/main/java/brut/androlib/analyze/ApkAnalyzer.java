@@ -767,4 +767,250 @@ public class ApkAnalyzer {
         result.put("error", "Class not found");
         return result;
     }
+
+    public Map<String, Object> getClassList() throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        List<String> classNames = new ArrayList<>();
+        ExtFile extFile = new ExtFile(mApkFile);
+        try {
+            com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer container =
+                new com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer(extFile, null);
+            for (String dexName : container.getDexEntryNames()) {
+                com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer.DexEntry<
+                    com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile> entry = container.getEntry(dexName);
+                if (entry == null) continue;
+                com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile dexFile = entry.getDexFile();
+                for (com.android.tools.smali.dexlib2.iface.ClassDef classDef : dexFile.getClasses()) {
+                    String humanName = classDef.getType().substring(1, classDef.getType().length() - 1).replace('/', '.');
+                    classNames.add(humanName);
+                }
+            }
+        } catch (IOException ex) {
+            throw new AndrolibException(ex);
+        } finally {
+            try { extFile.close(); } catch (Exception ignored) {}
+        }
+        result.put("totalClasses", classNames.size());
+        result.put("classes", classNames);
+        return result;
+    }
+
+    public Map<String, Object> getMethodSearch(String pattern) throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        List<Map<String, Object>> methods = new ArrayList<>();
+        Pattern regex = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+        ExtFile extFile = new ExtFile(mApkFile);
+        try {
+            com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer container =
+                new com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer(extFile, null);
+            for (String dexName : container.getDexEntryNames()) {
+                com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer.DexEntry<
+                    com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile> entry = container.getEntry(dexName);
+                if (entry == null) continue;
+                com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile dexFile = entry.getDexFile();
+                for (com.android.tools.smali.dexlib2.iface.ClassDef classDef : dexFile.getClasses()) {
+                    String className = classDef.getType().substring(1, classDef.getType().length() - 1).replace('/', '.');
+                    for (com.android.tools.smali.dexlib2.iface.Method method : classDef.getMethods()) {
+                        if (regex.matcher(method.getName()).find()) {
+                            Map<String, Object> methodInfo = new LinkedHashMap<>();
+                            methodInfo.put("className", className);
+                            methodInfo.put("methodName", method.getName());
+                            methodInfo.put("returnType", method.getReturnType() != null ?
+                                method.getReturnType().substring(1, method.getReturnType().length() - 1).replace('/', '.') : null);
+                            List<String> paramTypes = new ArrayList<>();
+                            for (com.android.tools.smali.dexlib2.iface.MethodParameter param : method.getParameters()) {
+                                String pType = param.getType();
+                                paramTypes.add(pType.substring(1, pType.length() - 1).replace('/', '.'));
+                            }
+                            methodInfo.put("parameters", paramTypes);
+                            methodInfo.put("accessFlags", method.getAccessFlags());
+                            methods.add(methodInfo);
+                        }
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            throw new AndrolibException(ex);
+        } finally {
+            try { extFile.close(); } catch (Exception ignored) {}
+        }
+        result.put("totalMatches", methods.size());
+        result.put("methods", methods);
+        return result;
+    }
+
+    public Map<String, Object> getFieldSearch(String pattern) throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        List<Map<String, Object>> fields = new ArrayList<>();
+        Pattern regex = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
+        ExtFile extFile = new ExtFile(mApkFile);
+        try {
+            com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer container =
+                new com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer(extFile, null);
+            for (String dexName : container.getDexEntryNames()) {
+                com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer.DexEntry<
+                    com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile> entry = container.getEntry(dexName);
+                if (entry == null) continue;
+                com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile dexFile = entry.getDexFile();
+                for (com.android.tools.smali.dexlib2.iface.ClassDef classDef : dexFile.getClasses()) {
+                    String className = classDef.getType().substring(1, classDef.getType().length() - 1).replace('/', '.');
+                    for (com.android.tools.smali.dexlib2.iface.Field field : classDef.getFields()) {
+                        if (regex.matcher(field.getName()).find()) {
+                            Map<String, Object> fieldInfo = new LinkedHashMap<>();
+                            fieldInfo.put("className", className);
+                            fieldInfo.put("fieldName", field.getName());
+                            fieldInfo.put("type", field.getType() != null ?
+                                field.getType().substring(1, field.getType().length() - 1).replace('/', '.') : null);
+                            fieldInfo.put("accessFlags", field.getAccessFlags());
+                            fields.add(fieldInfo);
+                        }
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            throw new AndrolibException(ex);
+        } finally {
+            try { extFile.close(); } catch (Exception ignored) {}
+        }
+        result.put("totalMatches", fields.size());
+        result.put("fields", fields);
+        return result;
+    }
+
+    public Map<String, Object> getAssetList() throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            Directory dir = mApkFile.getDirectory();
+            List<String> assets = new ArrayList<>();
+            if (dir.containsDir("assets")) {
+                for (String file : dir.getDir("assets").getFiles(true)) {
+                    assets.add(file);
+                }
+            }
+            result.put("hasAssets", dir.containsDir("assets"));
+            result.put("totalAssets", assets.size());
+            result.put("assets", assets);
+        } catch (DirectoryException ex) {
+            throw new AndrolibException(ex);
+        }
+        return result;
+    }
+
+    public Map<String, Object> getDexStrings() throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        List<String> strings = new ArrayList<>();
+        ExtFile extFile = new ExtFile(mApkFile);
+        try {
+            com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer container =
+                new com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer(extFile, null);
+            for (String dexName : container.getDexEntryNames()) {
+                com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer.DexEntry<
+                    com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile> entry = container.getEntry(dexName);
+                if (entry == null) continue;
+                com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile dexFile = entry.getDexFile();
+                for (com.android.tools.smali.dexlib2.dexbacked.reference.DexBackedStringReference ref : dexFile.getStringReferences()) {
+                    strings.add(ref.getString());
+                }
+            }
+        } catch (IOException ex) {
+            throw new AndrolibException(ex);
+        } finally {
+            try { extFile.close(); } catch (Exception ignored) {}
+        }
+        result.put("totalStrings", strings.size());
+        result.put("strings", strings);
+        return result;
+    }
+
+    public Map<String, Object> getPermissionDetail() throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        ManifestInfo manifest = getManifestInfo();
+        if (manifest == null) return result;
+        List<Map<String, Object>> permissionDetails = new ArrayList<>();
+        for (String perm : manifest.getPermissions()) {
+            Map<String, Object> detail = new LinkedHashMap<>();
+            detail.put("name", perm);
+            detail.put("dangerous", DANGEROUS_PERMISSIONS.contains(perm));
+            String category;
+            if (perm.startsWith("android.permission")) {
+                category = DANGEROUS_PERMISSIONS.contains(perm) ? "dangerous" : "normal";
+            } else {
+                category = "custom";
+            }
+            detail.put("category", category);
+            permissionDetails.add(detail);
+        }
+        result.put("totalPermissions", permissionDetails.size());
+        result.put("dangerousCount", (int) permissionDetails.stream().filter(p -> "dangerous".equals(p.get("category"))).count());
+        result.put("normalCount", (int) permissionDetails.stream().filter(p -> "normal".equals(p.get("category"))).count());
+        result.put("customCount", (int) permissionDetails.stream().filter(p -> "custom".equals(p.get("category"))).count());
+        result.put("permissions", permissionDetails);
+        return result;
+    }
+
+    public Map<String, Object> getInheritanceInfo(String className) throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        String dexType = "L" + className.replace('.', '/') + ";";
+        ExtFile extFile = new ExtFile(mApkFile);
+        try {
+            com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer container =
+                new com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer(extFile, null);
+            List<String> inheritanceChain = new ArrayList<>();
+            String currentType = dexType;
+            Set<String> visited = new HashSet<>();
+            while (currentType != null && !visited.contains(currentType)) {
+                visited.add(currentType);
+                String humanName = currentType.substring(1, currentType.length() - 1).replace('/', '.');
+                inheritanceChain.add(humanName);
+                boolean found = false;
+                for (String dexName : container.getDexEntryNames()) {
+                    com.android.tools.smali.dexlib2.dexbacked.ZipDexContainer.DexEntry<
+                        com.android.tools.smali.dexlib2.dexbacked.DexBackedDexFile> entry = container.getEntry(dexName);
+                    if (entry == null) continue;
+                    for (com.android.tools.smali.dexlib2.iface.ClassDef classDef : entry.getDexFile().getClasses()) {
+                        if (classDef.getType().equals(currentType)) {
+                            currentType = classDef.getSuperclass();
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+                if (!found) break;
+            }
+            result.put("className", className);
+            result.put("inheritanceChain", inheritanceChain);
+        } catch (IOException ex) {
+            throw new AndrolibException(ex);
+        } finally {
+            try { extFile.close(); } catch (Exception ignored) {}
+        }
+        return result;
+    }
+
+    public Map<String, Object> getManifestXml() throws AndrolibException {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            Directory dir = mApkFile.getDirectory();
+            if (!dir.containsFile("AndroidManifest.xml")) {
+                result.put("error", "No AndroidManifest.xml found");
+                return result;
+            }
+            ApkInfo apkInfo = new ApkInfo();
+            apkInfo.setApkFile(mApkFile);
+            ResDecoder resDecoder = new ResDecoder(apkInfo, mConfig);
+            BinaryXmlResourceParser parser = new BinaryXmlResourceParser(resDecoder.getTable(), false, false);
+            ResXmlSerializer serial = new ResXmlSerializer(true);
+            ManifestPullEventHandler handler = new ManifestPullEventHandler(apkInfo, false);
+            ResXmlPullStreamDecoder decoder = new ResXmlPullStreamDecoder(parser, serial, handler);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try (InputStream in = dir.getFileInput("AndroidManifest.xml")) {
+                decoder.decode(in, baos);
+            }
+            result.put("manifestXml", baos.toString("UTF-8"));
+        } catch (DirectoryException | IOException ex) {
+            throw new AndrolibException(ex);
+        }
+        return result;
+    }
 }

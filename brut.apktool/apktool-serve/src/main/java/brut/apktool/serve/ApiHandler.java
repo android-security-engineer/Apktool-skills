@@ -247,6 +247,46 @@ public class ApiHandler {
         return JsonOutput.toJson(analyzer.getClassDetail(className));
     }
 
+    public String handleClassList(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getClassList());
+    }
+
+    public String handleMethodSearch(String apkPath, String pattern) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getMethodSearch(pattern));
+    }
+
+    public String handleFieldSearch(String apkPath, String pattern) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getFieldSearch(pattern));
+    }
+
+    public String handleAssetList(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getAssetList());
+    }
+
+    public String handleDexStrings(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getDexStrings());
+    }
+
+    public String handlePermissionDetail(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getPermissionDetail());
+    }
+
+    public String handleInheritance(String apkPath, String className) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getInheritanceInfo(className));
+    }
+
+    public String handleManifestXml(String apkPath) throws Exception {
+        ApkAnalyzer analyzer = new ApkAnalyzer(new File(apkPath), config);
+        return JsonOutput.toJson(analyzer.getManifestXml());
+    }
+
     public String handleDecode(String apkPath, String outputDir) throws Exception {
         Map<String, Object> result = new LinkedHashMap<>();
         try {
