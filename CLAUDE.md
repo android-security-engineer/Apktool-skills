@@ -6,25 +6,25 @@ AI-native Android reverse engineering skills for Claude Code. Provides 11 skills
 
 ```bash
 # Full analysis of an APK
-java -jar apktool.jar analyze app.apk
+apktool analyze app.apk
 
 # Quick info
-java -jar apktool.jar info app.apk
+apktool info app.apk
 
 # Security audit
-java -jar apktool.jar security app.apk
+apktool security app.apk
 
 # Compare two versions
-java -jar apktool.jar diff app_v1.apk app_v2.apk
+apktool diff app_v1.apk app_v2.apk
 
 # Search for patterns
-java -jar apktool.jar search app.apk "password" -t strings
+apktool search app.apk "password" -t strings
 
 # Generate AI prompts
-java -jar apktool.jar ai app.apk -a security-review
+apktool ai app.apk -a security-review
 
 # JSON help catalog
-java -jar apktool.jar help --format json
+apktool help --format json
 ```
 
 ## Skills
@@ -119,10 +119,10 @@ java -jar apktool.jar help --format json
 All analysis commands output JSON to stdout. Use `jq` or similar tools to parse:
 
 ```bash
-java -jar apktool.jar info app.apk | jq '.packageName'
-java -jar apktool.jar security app.apk | jq '.riskScore'
-java -jar apktool.jar api-surface app.apk | jq '.exportedActivities[].name'
-java -jar apktool.jar ai app.apk -a context | jq '.'
+apktool info app.apk | jq '.packageName'
+apktool security app.apk | jq '.riskScore'
+apktool api-surface app.apk | jq '.exportedActivities[].name'
+apktool ai app.apk -a context | jq '.'
 ```
 
 ## HTTP API Endpoints (serve command)
@@ -181,6 +181,6 @@ java -jar apktool.jar ai app.apk -a context | jq '.'
 ## Build
 
 ```bash
-./gradlew build
-# CLI jar at: brut.apktool/apktool-cli/build/libs/apktool-*.jar
+./gradlew build shadowJar
+# Then use: apktool <command>
 ```
