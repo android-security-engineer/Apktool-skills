@@ -25,7 +25,7 @@ AI-Apktool CLI must be available.
 ### Step 1: Automated Security Report
 
 ```bash
-java -jar apktool.jar security <apk-file>
+apktool security <apk-file>
 ```
 
 Review: `dangerousPermissions[]`, `highRiskComponents[]`, `debuggable`, `allowBackup`, `usesCleartextTraffic`, `findings[]`, `riskScore`
@@ -33,7 +33,7 @@ Review: `dangerousPermissions[]`, `highRiskComponents[]`, `debuggable`, `allowBa
 ### Step 2: Attack Surface Analysis
 
 ```bash
-java -jar apktool.jar api-surface <apk-file>
+apktool api-surface <apk-file>
 ```
 
 For each exported component, verify: Is `exported=true` intentional? Is there permission protection? What data can it receive/process?
@@ -41,7 +41,7 @@ For each exported component, verify: Is `exported=true` intentional? Is there pe
 ### Step 3: Permission Deep Dive
 
 ```bash
-java -jar apktool.jar permissions <apk-file>
+apktool permissions <apk-file>
 ```
 
 Cross-reference with app functionality.
@@ -49,31 +49,31 @@ Cross-reference with app functionality.
 ### Step 4: Sensitive Data Search
 
 ```bash
-java -jar apktool.jar search <apk-file> "password|passwd|secret|api.?key|token|credential" -t strings
-java -jar apktool.jar search <apk-file> "https?://" -t strings
-java -jar apktool.jar search <apk-file> "Cipher|SecretKey|MessageDigest|SSLContext|TrustManager" -t classes
-java -jar apktool.jar search <apk-file> "encrypt|decrypt|hash|sign|verify" -t methods
+apktool search <apk-file> "password|passwd|secret|api.?key|token|credential" -t strings
+apktool search <apk-file> "https?://" -t strings
+apktool search <apk-file> "Cipher|SecretKey|MessageDigest|SSLContext|TrustManager" -t classes
+apktool search <apk-file> "encrypt|decrypt|hash|sign|verify" -t methods
 
 # Check manifest security flags
-java -jar apktool.jar manifest-flags <apk-file>
+apktool manifest-flags <apk-file>
 
 # Detailed permission analysis
-java -jar apktool.jar permission-detail <apk-file>
+apktool permission-detail <apk-file>
 
 # Check for dynamic code loading
-java -jar apktool.jar method-search <apk-file> -p 'DexClassLoader|PathClassLoader'
+apktool method-search <apk-file> -p 'DexClassLoader|PathClassLoader'
 ```
 
 ### Step 5: Signing Verification
 
 ```bash
-java -jar apktool.jar signing <apk-file>
+apktool signing <apk-file>
 ```
 
 ### Step 6: Generate AI Prompt for Deeper Analysis
 
 ```bash
-java -jar apktool.jar ai <apk-file> -a security-review
+apktool ai <apk-file> -a security-review
 ```
 
 ## OWASP Mobile Top 10 Mapping

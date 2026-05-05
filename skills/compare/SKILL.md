@@ -24,7 +24,7 @@ AI-Apktool CLI must be available.
 ### Step 1: Quick Diff
 
 ```bash
-java -jar apktool.jar diff <old-apk> <new-apk>
+apktool diff <old-apk> <new-apk>
 ```
 
 Review: `addedPermissions[]`, `removedPermissions[]`, `addedActivities[]`, `removedActivities[]`, `addedServices[]`, `addedDexFiles[]`, `addedNativeLibs[]`, `versionCodeChange`, `versionNameChange`, `targetSdkChange`
@@ -32,12 +32,12 @@ Review: `addedPermissions[]`, `removedPermissions[]`, `addedActivities[]`, `remo
 ### Step 2: Detailed Analysis
 
 ```bash
-java -jar apktool.jar security <old-apk> > old_security.json
-java -jar apktool.jar security <new-apk> > new_security.json
-java -jar apktool.jar api-surface <old-apk> > old_surface.json
-java -jar apktool.jar api-surface <new-apk> > new_surface.json
-java -jar apktool.jar structure <old-apk> > old_structure.json
-java -jar apktool.jar structure <new-apk> > new_structure.json
+apktool security <old-apk> > old_security.json
+apktool security <new-apk> > new_security.json
+apktool api-surface <old-apk> > old_surface.json
+apktool api-surface <new-apk> > new_surface.json
+apktool structure <old-apk> > old_structure.json
+apktool structure <new-apk> > new_structure.json
 ```
 
 ### Step 3: Identify Key Changes
@@ -47,14 +47,14 @@ Focus on: New Permissions, New Exported Components, Native Library Changes, DEX 
 ### Step 4: Search for Specific Changes
 
 ```bash
-java -jar apktool.jar search <new-apk> "changelog|whats.?new|updated" -t strings
-java -jar apktool.jar search <new-apk> "NewFeature|UpdatedActivity" -t classes
+apktool search <new-apk> "changelog|whats.?new|updated" -t strings
+apktool search <new-apk> "NewFeature|UpdatedActivity" -t classes
 
 # Compare signing certificates
-java -jar apktool.jar signing <old-apk> > old_signing.json
-java -jar apktool.jar signing <new-apk> > new_signing.json
+apktool signing <old-apk> > old_signing.json
+apktool signing <new-apk> > new_signing.json
 
 # Compare file hashes
-java -jar apktool.jar file-hash <old-apk> > old_hash.json
-java -jar apktool.jar file-hash <new-apk> > new_hash.json
+apktool file-hash <old-apk> > old_hash.json
+apktool file-hash <new-apk> > new_hash.json
 ```

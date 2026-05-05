@@ -12,12 +12,12 @@ Complete reference for all AI-Apktool CLI commands.
 
 All analysis commands output JSON to stdout:
 ```bash
-java -jar apktool.jar <command> <apk-file>
+apktool <command> <apk-file>
 ```
 
 JSON Help Catalog:
 ```bash
-java -jar apktool.jar help --format json
+apktool help --format json
 ```
 
 ## Core Commands
@@ -76,28 +76,28 @@ java -jar apktool.jar help --format json
 ## Search Commands
 
 ```bash
-java -jar apktool.jar search <apk-file> [pattern] -t <type>
+apktool search <apk-file> [pattern] -t <type>
 # type: strings, classes, methods (default: classes)
 # pattern: Java regex (default: .*)
 
-java -jar apktool.jar strings <apk-file> [-p <pattern>]
+apktool strings <apk-file> [-p <pattern>]
 # shortcut for search -t strings
 ```
 
 ## Diff & Structure
 
 ```bash
-java -jar apktool.jar diff <apk1> <apk2>
-java -jar apktool.jar structure <apk-file>
+apktool diff <apk1> <apk2>
+apktool structure <apk-file>
 ```
 
 ## AI & Service
 
 ```bash
-java -jar apktool.jar ai <apk-file> -a <action>
+apktool ai <apk-file> -a <action>
 # action: explain, security-review, summarize
 
-java -jar apktool.jar serve [-p <port>]
+apktool serve [-p <port>]
 # default port: 8080
 ```
 

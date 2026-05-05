@@ -26,7 +26,7 @@ AI-Apktool CLI must be available.
 
 ```bash
 # Full signing details
-java -jar apktool.jar signing app.apk
+apktool signing app.apk
 ```
 
 Review: `v1Signing`, `v2Signing`, `v3Signing`, `certificates[{subject, issuer, serial, notBefore, notAfter, fingerprints{sha256,sha1,md5}}]`
@@ -43,21 +43,21 @@ Key checks:
 
 ```bash
 # Compare signing between versions
-java -jar apktool.jar signing app_v1.apk > signing_v1.json
-java -jar apktool.jar signing app_v2.apk > signing_v2.json
+apktool signing app_v1.apk > signing_v1.json
+apktool signing app_v2.apk > signing_v2.json
 
 # Full diff including signing changes
-java -jar apktool.jar diff app_v1.apk app_v2.apk
+apktool diff app_v1.apk app_v2.apk
 ```
 
 ### Step 4: Check for Debug Signing
 
 ```bash
 # Check manifest flags (debuggable)
-java -jar apktool.jar manifest-flags app.apk
+apktool manifest-flags app.apk
 
 # Full security report
-java -jar apktool.jar security app.apk
+apktool security app.apk
 ```
 
 ## Signing Scheme Security
@@ -73,7 +73,7 @@ java -jar apktool.jar security app.apk
 
 ```bash
 # Complete signing audit
-java -jar apktool.jar signing app.apk
-java -jar apktool.jar manifest-flags app.apk
-java -jar apktool.jar file-hash app.apk
+apktool signing app.apk
+apktool manifest-flags app.apk
+apktool file-hash app.apk
 ```

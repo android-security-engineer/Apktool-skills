@@ -27,66 +27,66 @@ AI-Apktool CLI must be available.
 
 ```bash
 # List all DEX files
-java -jar apktool.jar dex-list app.apk
+apktool dex-list app.apk
 
 # Per-DEX statistics (classes, methods, fields)
-java -jar apktool.jar dex-info app.apk
+apktool dex-info app.apk
 
 # Code structure overview
-java -jar apktool.jar structure app.apk
+apktool structure app.apk
 
 # List all class names
-java -jar apktool.jar class-list app.apk
+apktool class-list app.apk
 ```
 
 ### Step 2: Explore Specific Classes
 
 ```bash
 # Get detailed class info (methods, fields, superclass, interfaces)
-java -jar apktool.jar class-info app.apk com.example.MyActivity
+apktool class-info app.apk com.example.MyActivity
 
 # Get class inheritance chain
-java -jar apktool.jar inheritance app.apk com.example.MyActivity
+apktool inheritance app.apk com.example.MyActivity
 ```
 
 ### Step 3: Search Methods and Fields
 
 ```bash
 # Search methods by regex pattern
-java -jar apktool.jar method-search app.apk -p 'onCreate'
-java -jar apktool.jar method-search app.apk -p 'encrypt|decrypt|cipher'
+apktool method-search app.apk -p 'onCreate'
+apktool method-search app.apk -p 'encrypt|decrypt|cipher'
 
 # Search fields by regex pattern
-java -jar apktool.jar field-search app.apk -p 'mContext'
-java -jar apktool.jar field-search app.apk -p 'apiKey|secret|token'
+apktool field-search app.apk -p 'mContext'
+apktool field-search app.apk -p 'apiKey|secret|token'
 ```
 
 ### Step 4: Extract Strings
 
 ```bash
 # All DEX strings
-java -jar apktool.jar dex-strings app.apk
+apktool dex-strings app.apk
 
 # All strings (DEX + resources)
-java -jar apktool.jar strings app.apk
+apktool strings app.apk
 
 # Filter strings by pattern
-java -jar apktool.jar strings app.apk -p 'http.*'
+apktool strings app.apk -p 'http.*'
 ```
 
 ## Common Patterns
 
 ```bash
 # Find all crypto-related code
-java -jar apktool.jar method-search app.apk -p 'Cipher|SecretKey|MessageDigest|AES|RSA'
+apktool method-search app.apk -p 'Cipher|SecretKey|MessageDigest|AES|RSA'
 
 # Find all network-related classes
-java -jar apktool.jar class-list app.apk | grep -i 'http\|url\|request\|api'
+apktool class-list app.apk | grep -i 'http\|url\|request\|api'
 
 # Trace Activity lifecycle
-java -jar apktool.jar method-search app.apk -p 'onCreate|onStart|onResume|onPause|onStop|onDestroy'
+apktool method-search app.apk -p 'onCreate|onStart|onResume|onPause|onStop|onDestroy'
 
 # Find hardcoded credentials
-java -jar apktool.jar field-search app.apk -p 'password|secret|key|token|credential'
-java -jar apktool.jar dex-strings app.apk | grep -i 'password\|api.key\|bearer'
+apktool field-search app.apk -p 'password|secret|key|token|credential'
+apktool dex-strings app.apk | grep -i 'password\|api.key\|bearer'
 ```

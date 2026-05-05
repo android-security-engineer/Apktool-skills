@@ -26,26 +26,26 @@ AI-Apktool CLI must be available.
 
 ```bash
 # Full decode (smali + resources)
-java -jar apktool.jar decode app.apk -o decoded_app
+apktool decode app.apk -o decoded_app
 
 # Decode resources only (no smali)
-java -jar apktool.jar decode app.apk -o decoded_app -s
+apktool decode app.apk -o decoded_app -s
 
 # Decode manifest only
-java -jar apktool.jar decode app.apk -o decoded_app --only-manifest
+apktool decode app.apk -o decoded_app --only-manifest
 
 # Force decode (overwrite existing directory)
-java -jar apktool.jar decode app.apk -o decoded_app -f
+apktool decode app.apk -o decoded_app -f
 ```
 
 ### Step 2: Inspect Decoded Content
 
 ```bash
 # Read decoded APK metadata
-java -jar apktool.jar apk-info decoded_app
+apktool apk-info decoded_app
 
 # View full manifest XML
-java -jar apktool.jar manifest-xml app.apk
+apktool manifest-xml app.apk
 ```
 
 ### Step 3: Modify (if needed)
@@ -60,37 +60,37 @@ Edit files in the decoded directory:
 
 ```bash
 # Build from decoded directory
-java -jar apktool.jar build decoded_app -o modified.apk
+apktool build decoded_app -o modified.apk
 
 # Build with custom output
-java -jar apktool.jar build decoded_app -o output/modified.apk
+apktool build decoded_app -o output/modified.apk
 ```
 
 ### Step 5: Framework Management
 
 ```bash
 # Install framework APK (needed for proper resource decoding)
-java -jar apktool.jar install-framework framework-res.apk
+apktool install-framework framework-res.apk
 
 # List installed frameworks
-java -jar apktool.jar list-frameworks
+apktool list-frameworks
 
 # Clean all frameworks
-java -jar apktool.jar clean-frameworks
+apktool clean-frameworks
 
 # Publicize resources in ARSC
-java -jar apktool.jar publicize-resources resources.arsc
+apktool publicize-resources resources.arsc
 ```
 
 ## Common Patterns
 
 ```bash
 # Decode → Modify → Rebuild cycle
-java -jar apktool.jar decode app.apk -o app_dir
+apktool decode app.apk -o app_dir
 # ... edit files in app_dir ...
-java -jar apktool.jar build app_dir -o modified.apk
+apktool build app_dir -o modified.apk
 
 # Decode with framework for OEM ROMs
-java -jar apktool.jar install-framework framework-res.apk
-java -jar apktool.jar decode app.apk -o app_dir
+apktool install-framework framework-res.apk
+apktool decode app.apk -o app_dir
 ```

@@ -30,7 +30,7 @@ AI-Apktool CLI must be available. Build from source or download:
 Run a full analysis to get all data at once:
 
 ```bash
-java -jar apktool.jar analyze <apk-file>
+apktool analyze <apk-file>
 ```
 
 This returns a comprehensive JSON object with: summary, manifest, security report, API surface, resources, signing info, and code structure.
@@ -55,25 +55,25 @@ Based on findings, run targeted commands:
 
 ```bash
 # Focus on security issues
-java -jar apktool.jar security <apk-file>
+apktool security <apk-file>
 
 # Check what's exposed to other apps
-java -jar apktool.jar api-surface <apk-file>
+apktool api-surface <apk-file>
 
 # Search for sensitive strings
-java -jar apktool.jar search <apk-file> "password|secret|key|token" -t strings
+apktool search <apk-file> "password|secret|key|token" -t strings
 
 # Search for specific classes
-java -jar apktool.jar search <apk-file> "LoginActivity|AuthHelper|Encryption" -t classes
+apktool search <apk-file> "LoginActivity|AuthHelper|Encryption" -t classes
 
 # Check DEX structure
-java -jar apktool.jar dex-info <apk-file>
+apktool dex-info <apk-file>
 
 # Get file hashes for integrity
-java -jar apktool.jar file-hash <apk-file>
+apktool file-hash <apk-file>
 
 # Detailed permission analysis
-java -jar apktool.jar permission-detail <apk-file>
+apktool permission-detail <apk-file>
 ```
 
 ## Output Interpretation
