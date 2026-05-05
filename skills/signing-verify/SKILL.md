@@ -1,0 +1,79 @@
+---
+name: signing-verify
+description: APK signing and certificate verification workflow. Use when you need to verify APK signing, check certificate details, or assess signing security.
+autoInvoke: true
+---
+
+# APK Signing & Verification
+
+Workflow for verifying and analyzing APK signing certificates.
+
+## When to Use
+
+- Verifying APK authenticity
+- Checking signing certificate details
+- Assessing signing scheme security (v1/v2/v3/v4)
+- Comparing certificates between app versions
+- Detecting self-signed or debug certificates
+
+## Prerequisites
+
+AI-Apktool CLI must be available.
+
+## Workflow
+
+### Step 1: Get Signing Information
+
+```bash
+# Full signing details
+java -jar apktool.jar signing app.apk
+```
+
+Review: `v1Signing`, `v2Signing`, `v3Signing`, `certificates[{subject, issuer, serial, notBefore, notAfter, fingerprints{sha256,sha1,md5}}]`
+
+### Step 2: Analyze Certificate
+
+Key checks:
+- **Subject/Issuer**: Is it self-signed? (subject == issuer)
+- **Validity**: Is the certificate expired? (notAfter < now)
+- **Fingerprints**: Compare with known good certificates
+- **Signing schemes**: v1 only = vulnerable to Janus attack, v2+ recommended
+
+### Step 3: Compare with Another APK
+
+```bash
+# Compare signing between versions
+java -jar apktool.jar signing app_v1.apk > signing_v1.json
+java -jar apktool.jar signing app_v2.apk > signing_v2.json
+
+# Full diff including signing changes
+java -jar apktool.jar diff app_v1.apk app_v2.apk
+```
+
+### Step 4: Check for Debug Signing
+
+```bash
+# Check manifest flags (debuggable)
+java -jar apktool.jar manifest-flags app.apk
+
+# Full security report
+java -jar apktool.jar security app.apk
+```
+
+## Signing Scheme Security
+
+| Scheme | Android Version | Security |
+|--------|---------------|----------|
+| v1 (JAR) | 7.0+ | Vulnerable to Janus attack, allows APK modification |
+| v2 (APK Signature Scheme v2) | 7.0+ | Protects entire APK, prevents modification |
+| v3 (APK Signature Scheme v3) | 9.0+ | Adds key rotation support |
+| v4 | 11.0+ | Adds streaming verification |
+
+## Common Patterns
+
+```bash
+# Complete signing audit
+java -jar apktool.jar signing app.apk
+java -jar apktool.jar manifest-flags app.apk
+java -jar apktool.jar file-hash app.apk
+```
