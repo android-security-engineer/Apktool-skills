@@ -1,6 +1,6 @@
 # AI-Apktool Skills
 
-AI-native Android reverse engineering skills for Claude Code. Provides 5 skills covering APK analysis, security auditing, and code exploration.
+AI-native Android reverse engineering skills for Claude Code. Provides 11 skills covering APK analysis, security auditing, code exploration, and more.
 
 ## Quick Start
 
@@ -36,6 +36,12 @@ java -jar apktool.jar help --format json
 | `compare` | Version comparison | Checking changes between app versions |
 | `reverse` | Full reverse engineering | Deep analysis, modification, malware investigation |
 | `reference` | CLI command reference | Looking up exact syntax or output format |
+| `decode-build` | Decode & build workflow | Decoding APK, rebuilding, framework management |
+| `dex-deep-dive` | DEX deep analysis | Class/method/field exploration, inheritance tracing |
+| `network-analysis` | Network communication analysis | Finding endpoints, URLs, cleartext traffic |
+| `malware-hunt` | Malware indicator hunting | Suspicious APK investigation, malicious patterns |
+| `resource-explorer` | Resource & file exploration | Resources, locales, assets, file structure |
+| `signing-verify` | Signing verification | Certificate analysis, signing scheme assessment |
 
 ## CLI Command Reference
 

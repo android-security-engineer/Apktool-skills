@@ -49,4 +49,12 @@ Focus on: New Permissions, New Exported Components, Native Library Changes, DEX 
 ```bash
 java -jar apktool.jar search <new-apk> "changelog|whats.?new|updated" -t strings
 java -jar apktool.jar search <new-apk> "NewFeature|UpdatedActivity" -t classes
+
+# Compare signing certificates
+java -jar apktool.jar signing <old-apk> > old_signing.json
+java -jar apktool.jar signing <new-apk> > new_signing.json
+
+# Compare file hashes
+java -jar apktool.jar file-hash <old-apk> > old_hash.json
+java -jar apktool.jar file-hash <new-apk> > new_hash.json
 ```

@@ -83,4 +83,13 @@ java -jar apktool.jar search <apk> "Login|Auth|Session|Token|OAuth" -t classes
 # Malware indicators
 java -jar apktool.jar search <apk> "Runtime|exec|ProcessBuilder|su|root" -t classes
 java -jar apktool.jar search <apk> "exec|loadLibrary|DexClassLoader" -t methods
+
+# Search fields
+java -jar apktool.jar field-search <apk-file> -p 'mContext|mView|mHandler'
+
+# Get class inheritance
+java -jar apktool.jar inheritance <apk-file> com.example.SuspiciousClass
+
+# Get detailed class info
+java -jar apktool.jar class-info <apk-file> com.example.TargetClass
 ```

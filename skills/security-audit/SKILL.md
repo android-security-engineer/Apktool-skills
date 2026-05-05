@@ -53,6 +53,15 @@ java -jar apktool.jar search <apk-file> "password|passwd|secret|api.?key|token|c
 java -jar apktool.jar search <apk-file> "https?://" -t strings
 java -jar apktool.jar search <apk-file> "Cipher|SecretKey|MessageDigest|SSLContext|TrustManager" -t classes
 java -jar apktool.jar search <apk-file> "encrypt|decrypt|hash|sign|verify" -t methods
+
+# Check manifest security flags
+java -jar apktool.jar manifest-flags <apk-file>
+
+# Detailed permission analysis
+java -jar apktool.jar permission-detail <apk-file>
+
+# Check for dynamic code loading
+java -jar apktool.jar method-search <apk-file> -p 'DexClassLoader|PathClassLoader'
 ```
 
 ### Step 5: Signing Verification

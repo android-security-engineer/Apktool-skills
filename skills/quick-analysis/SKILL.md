@@ -65,6 +65,15 @@ java -jar apktool.jar search <apk-file> "password|secret|key|token" -t strings
 
 # Search for specific classes
 java -jar apktool.jar search <apk-file> "LoginActivity|AuthHelper|Encryption" -t classes
+
+# Check DEX structure
+java -jar apktool.jar dex-info <apk-file>
+
+# Get file hashes for integrity
+java -jar apktool.jar file-hash <apk-file>
+
+# Detailed permission analysis
+java -jar apktool.jar permission-detail <apk-file>
 ```
 
 ## Output Interpretation

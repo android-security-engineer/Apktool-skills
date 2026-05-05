@@ -59,6 +59,18 @@ java -jar apktool.jar help --format json
 | `file-list` | totalFiles, totalSize, entries[] |
 | `file-hash` | sha256, sha1, md5 |
 | `class-info` | superClass, methods[], fields[], interfaces[] |
+| `class-list` | totalClasses, classes[] |
+| `method-search` | totalMatches, methods[{className, methodName, returnType}] |
+| `field-search` | totalMatches, fields[{className, fieldName, type}] |
+| `asset-list` | hasAssets, totalAssets, assets[] |
+| `dex-strings` | totalStrings, strings[] |
+| `permission-detail` | dangerousCount, normalCount, customCount, permissions[] |
+| `inheritance` | className, inheritanceChain[] |
+| `manifest-xml` | manifestXml |
+| `uses-libs` | usesLibraries[] |
+| `manifest-flags` | debuggable, allowBackup, usesCleartextTraffic, networkSecurityConfig |
+| `file-list` | totalFiles, totalSize, entries[] |
+| `file-hash` | sha256, sha1, md5 |
 | `analyze` | all of the above combined |
 
 ## Search Commands
