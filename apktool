@@ -1,0 +1,67 @@
+#!/bin/bash
+# AI-Apktool unified CLI entry point
+# Automatically finds the built JAR and executes it.
+# Usage: apktool <command> [options] <args>
+
+# Resolve script directory (follow symlinks)
+prog="$0"
+while [ -h "${prog}" ]; do
+    newProg=$(readlink "${prog}")
+    if expr "x${newProg}" : 'x/' >/dev/null; then
+        prog="${newProg}"
+    else
+        progdir=$(dirname "${prog}")
+        prog="${progdir}/${newProg}"
+    fi
+done
+progdir=$(cd "$(dirname "${prog}")" && pwd)
+
+# Find the JAR file — try multiple locations in order of preference
+find_jar() {
+    # 1. ProGuard-optimized release jar (apktool_*.jar in build/libs/)
+    local release_jar
+    release_jar=$(ls "$progdir/build/libs/apktool_"*.jar 2>/dev/null | sort -V | tail -n 1)
+    if [ -n "$release_jar" ] && [ -r "$release_jar" ]; then
+        echo "$release_jar"
+        return 0
+    fi
+
+    # 2. Shadow jar (apktool-cli-all.jar)
+    local shadow_jar="$progdir/brut.apktool/apktool-cli/build/libs/apktool-cli-all.jar"
+    if [ -r "$shadow_jar" ]; then
+        echo "$shadow_jar"
+        return 0
+    fi
+
+    # 3. Plain cli jar (for development)
+    local cli_jar="$progdir/brut.apktool/apktool-cli/build/libs/apktool-cli.jar"
+    if [ -r "$cli_jar" ]; then
+        echo "$cli_jar"
+        return 0
+    fi
+
+    # 4. Root build/libs fallback
+    local root_jar="$progdir/build/libs/apktool-cli.jar"
+    if [ -r "$root_jar" ]; then
+        echo "$root_jar"
+        return 0
+    fi
+
+    echo "ERROR: Cannot find apktool JAR. Run './gradlew build shadowJar' first." >&2
+    return 1
+}
+
+jarpath=$(find_jar) || exit 1
+
+javaOpts="-Xmx1024M -Dfile.encoding=utf-8"
+javaOpts="$javaOpts -Djdk.util.zip.disableZip64ExtraFieldValidation=true"
+javaOpts="$javaOpts -Djdk.nio.zipfs.allowDotZipEntry=true"
+
+# Extract -J options for Java
+while expr "x$1" : 'x-J' >/dev/null; do
+    opt=$(expr "$1" : '-J\(.*\)')
+    javaOpts="${javaOpts} -${opt}"
+    shift
+done
+
+exec java $javaOpts -Djava.awt.headless=true -jar "$jarpath" "$@"
