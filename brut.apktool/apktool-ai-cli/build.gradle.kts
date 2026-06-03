@@ -1,0 +1,88 @@
+val gitRevision: String by rootProject.extra
+val apktoolVersion: String by rootProject.extra
+val r8: Configuration by configurations.creating
+
+plugins {
+    application
+}
+
+dependencies {
+    implementation(project(":brut.apktool:apktool-lib"))
+    implementation(libs.commons.cli)
+    r8(libs.r8)
+}
+
+application {
+    mainClass.set("brut.apktool.ai.cli.Main")
+    tasks.run.get().workingDir = file(System.getProperty("user.dir"))
+}
+
+tasks {
+    processResources {
+        from("src/main/resources") {
+            include("apktool.properties")
+            expand("version" to apktoolVersion, "gitrev" to gitRevision)
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        }
+        includeEmptyDirs = false
+    }
+}
+
+tasks.withType<AbstractArchiveTask>().configureEach {
+    isPreserveFileTimestamps = false
+    isReproducibleFileOrder = true
+}
+
+tasks.register<Delete>("cleanOutputDirectory") {
+    delete(fileTree("build/libs") {
+        exclude("apktool-ai-cli-sources.jar")
+        exclude("apktool-ai-cli-javadoc.jar")
+        exclude("apktool-ai-cli-all.jar")
+    })
+}
+
+val shadowJar = tasks.register("shadowJar", Jar::class) {
+    dependsOn("build")
+    dependsOn("cleanOutputDirectory")
+
+    group = "build"
+    description = "Creates a single executable JAR with all dependencies"
+    manifest.attributes["Main-Class"] = "brut.apktool.ai.cli.Main"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    val dependencies = configurations
+        .runtimeClasspath
+        .get()
+        .map(::zipTree)
+
+    from(dependencies)
+    with(tasks.jar.get())
+}
+
+tasks.register<JavaExec>("proguard") {
+    dependsOn("shadowJar")
+
+    onlyIf {
+        JavaVersion.current().isJava11Compatible
+    }
+
+    val proguardRules = file("proguard-rules.pro")
+    val originalJar = shadowJar.map { it.outputs.files.singleFile }
+
+    inputs.files(originalJar, proguardRules)
+    outputs.file("build/libs/apktool_ai_$apktoolVersion.jar")
+
+    classpath(r8)
+    mainClass.set("com.android.tools.r8.R8")
+
+    args(
+        "--release",
+        "--classfile",
+        "--no-minification",
+        "--map-diagnostics:UnusedProguardKeepRuleDiagnostic", "info", "none",
+        "--lib", javaLauncher.get().metadata.installationPath.toString(),
+        "--output", outputs.files.singleFile.toString(),
+        "--pg-conf", proguardRules.toString(),
+        originalJar.get().toString()
+    )
+}

@@ -1,0 +1,9 @@
+-keep class brut.apktool.ai.cli.Main { *; }
+-keep class brut.apktool.ai.cli.Skill { *; }
+-keep class brut.apktool.ai.cli.SkillResult { *; }
+-keep class brut.apktool.ai.cli.SkillContext { *; }
+-keep class brut.apktool.ai.cli.SkillStep { *; }
+-keep class brut.apktool.ai.cli.SkillRegistry { *; }
+-keep class brut.apktool.ai.cli.skill.** { *; }
+-keepattributes *Annotation*
+-dontwarn javax.annotation.**
