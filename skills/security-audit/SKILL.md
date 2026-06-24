@@ -79,28 +79,7 @@ apktool ai <apk-file> -a context           # structured facts (JSON) to feed an 
 
 ## Run the Whole Audit in One Pass
 
-Steps 1-5 hit the same APK repeatedly. Batch them with `run` so they share a single parse (much faster, with per-command error isolation):
-
-```bash
-cat > audit.json <<'JSON'
-{
-  "apk": "app.apk",
-  "commands": [
-    "security",
-    "api-surface",
-    "permission-detail",
-    "manifest-flags",
-    "signing",
-    { "command": "search", "params": { "type": "strings",  "pattern": "password|secret|api.?key|token|credential" } },
-    { "command": "search", "params": { "type": "strings",  "pattern": "https?://" } },
-    { "command": "method-search", "params": { "pattern": "DexClassLoader|PathClassLoader|TrustManager|HostnameVerifier" } }
-  ]
-}
-JSON
-apktool run audit.json
-```
-
-See the `reference` skill for the full script format.
+Steps 1-5 hit the same APK repeatedly — batch them with `apktool run` for a single shared parse and per-command error isolation. A ready-to-run script is in [`references/batch-audit.md`](references/batch-audit.md).
 
 ## OWASP Mobile Top 10 Mapping
 
