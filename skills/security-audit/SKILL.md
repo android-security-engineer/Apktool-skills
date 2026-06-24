@@ -18,7 +18,7 @@ Comprehensive security audit workflow for Android applications.
 
 ## Prerequisites
 
-AI-Apktool CLI must be available.
+The unified `apktool` CLI must be on your PATH. Build it from source with `./gradlew build shadowJar` (the `./apktool` wrapper invokes the resulting jar). All analysis commands print JSON to stdout; run `apktool help --format json` for the full machine-readable command catalog.
 
 ## Workflow
 
@@ -73,8 +73,34 @@ apktool signing <apk-file>
 ### Step 6: Generate AI Prompt for Deeper Analysis
 
 ```bash
-apktool ai <apk-file> -a security-review
+apktool ai <apk-file> -a security-review   # LLM prompt for a deeper review
+apktool ai <apk-file> -a context           # structured facts (JSON) to feed an agent
 ```
+
+## Run the Whole Audit in One Pass
+
+Steps 1-5 hit the same APK repeatedly. Batch them with `run` so they share a single parse (much faster, with per-command error isolation):
+
+```bash
+cat > audit.json <<'JSON'
+{
+  "apk": "app.apk",
+  "commands": [
+    "security",
+    "api-surface",
+    "permission-detail",
+    "manifest-flags",
+    "signing",
+    { "command": "search", "params": { "type": "strings",  "pattern": "password|secret|api.?key|token|credential" } },
+    { "command": "search", "params": { "type": "strings",  "pattern": "https?://" } },
+    { "command": "method-search", "params": { "pattern": "DexClassLoader|PathClassLoader|TrustManager|HostnameVerifier" } }
+  ]
+}
+JSON
+apktool run audit.json
+```
+
+See the `reference` skill for the full script format.
 
 ## OWASP Mobile Top 10 Mapping
 

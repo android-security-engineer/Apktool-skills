@@ -18,7 +18,7 @@ Workflow for discovering and analyzing network communication in Android apps.
 
 ## Prerequisites
 
-AI-Apktool CLI must be available.
+The unified `apktool` CLI must be on your PATH. Build it from source with `./gradlew build shadowJar` (the `./apktool` wrapper invokes the resulting jar). All analysis commands print JSON to stdout; run `apktool help --format json` for the full machine-readable command catalog.
 
 ## Workflow
 
