@@ -15,7 +15,7 @@ The lookup hub for AI-Apktool. This page lists every command and the universal c
 - **Regex**: all `pattern` arguments are **Java regular expressions**, case-sensitive by default. Prefix with `(?i)` for case-insensitive, e.g. `(?i)password`.
 - **Exit codes**: `0` on success, non-zero on failure (bad args, missing file, parse error); the message goes to stderr.
 - **Targets**: most commands take an `.apk`. Exceptions: `apk-info` reads a *decoded directory*; `diff` takes two APKs; `run` takes a script file; `pipe` reads stdin.
-- **Machine catalog**: `apktool help --format json` emits the full catalog (names, aliases, usage, examples) — the best source for tooling.
+- **Machine catalog**: `apktool help --format=json` emits the full catalog (names, aliases, usage, examples) — the best source for tooling.
 
 ## Command index
 
@@ -43,6 +43,6 @@ Pick a command here, then open the matching reference file for its exact fields/
 
 ```bash
 apktool help                 # human-readable help
-apktool help --format json   # machine-readable command catalog
+apktool help --format=json   # machine-readable command catalog
 apktool version              # tool version (alias: -v)
 ```

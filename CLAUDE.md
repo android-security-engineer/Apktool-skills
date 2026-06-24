@@ -24,7 +24,7 @@ apktool search app.apk "password" -t strings
 apktool ai app.apk -a security-review
 
 # JSON help catalog
-apktool help --format json
+apktool help --format=json
 ```
 
 ## Skills
