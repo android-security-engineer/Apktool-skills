@@ -67,61 +67,36 @@ This is a **fork of [Apktool](https://github.com/iBotPeaches/Apktool)** (by Conn
 > One picture beats a thousand words — the full capability tree at a glance.
 
 ```mermaid
-mindmap
-  root((AI-Apktool))
-    Core · from Apktool
-      decode / build
-      install / clean / list framework
-      publicize-resources
-    Analysis · 38 · JSON
-      Metadata
-        info · analyze
-        manifest · manifest-xml
-        sdk-info · file-list · file-hash
-      Components
-        activities · services
-        receivers · providers
-        api-surface
-      Permissions
-        permissions
-        permission-detail
-      Security
-        security · risk 0-100
-        signing
-        manifest-flags
-      DEX & Code
-        class-list · class-info
-        method-search · field-search
-        inheritance · structure
-        dex-info · dex-strings
-      Resources & Files
-        resources · locales
-        native-libs · assets
-        uses-libs · packages
-      Compare
-        diff · two APKs
-    Search
-      strings
-      classes
-      methods
-    Scripting
-      run · script file
-      pipe · stdin
-      single shared parse
-    AI Interface
-      ai explain
-      ai security-review
-      ai summarize
-      ai context · facts JSON
-    Service
-      serve · HTTP REST
-      api/v1 endpoints
-    Discovery
-      help --format=json
-    Claude Code Skills · 11
-      triage · audit · reverse
-      dex · network · resources
-      malware · signing · compare
+flowchart LR
+  R(["AI-Apktool"])
+
+  R --> CORE["Core · from Apktool"]
+  R --> ANA["Analysis · 38 · JSON"]
+  R --> SEA["Search"]
+  R --> SCR["Scripting"]
+  R --> AII["AI Interface"]
+  R --> SRV["Service"]
+  R --> DIS["Discovery"]
+  R --> SKL["Claude Code Skills · 11"]
+
+  CORE --> CORE1["decode / build"]
+  CORE --> CORE2["framework: install / clean / list"]
+  CORE --> CORE3["publicize-resources"]
+
+  ANA --> ANA1["Metadata<br/>info · analyze · manifest · sdk-info · file-hash"]
+  ANA --> ANA2["Components<br/>activities · services · receivers · providers · api-surface"]
+  ANA --> ANA3["Permissions<br/>permissions · permission-detail"]
+  ANA --> ANA4["Security<br/>security 0-100 · signing · manifest-flags"]
+  ANA --> ANA5["DEX and Code<br/>class · method · field · inheritance · structure · dex-strings"]
+  ANA --> ANA6["Resources and Files<br/>resources · locales · native-libs · assets · file-list"]
+  ANA --> ANA7["Compare<br/>diff · two APKs"]
+
+  SEA --> SEA1["strings · classes · methods"]
+  SCR --> SCR1["run · pipe<br/>single shared parse"]
+  AII --> AII1["ai · explain / security-review / summarize / context"]
+  SRV --> SRV1["serve · HTTP REST<br/>api/v1 endpoints"]
+  DIS --> DIS1["help --format=json"]
+  SKL --> SKL1["triage · audit · reverse · dex · network<br/>resources · malware · signing · compare"]
 ```
 
 ---

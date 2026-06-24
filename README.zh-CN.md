@@ -45,64 +45,39 @@ AI-Apktool 将 [Apktool](https://apktool.org) 改造为一个 AI 原生的逆向
 
 ## 功能树（一图概览）
 
-> 一图抵千言——下面这棵思维导图涵盖全部能力分类。
+> 一图抵千言——下面这棵树形图涵盖全部能力分类。
 
 ```mermaid
-mindmap
-  root((AI-Apktool))
-    核心 · 源自 Apktool
-      decode / build
-      install / clean / list framework
-      publicize-resources
-    分析 · 38 · JSON
-      元数据
-        info · analyze
-        manifest · manifest-xml
-        sdk-info · file-list · file-hash
-      组件
-        activities · services
-        receivers · providers
-        api-surface
-      权限
-        permissions
-        permission-detail
-      安全
-        security · 风险 0-100
-        signing
-        manifest-flags
-      DEX 与代码
-        class-list · class-info
-        method-search · field-search
-        inheritance · structure
-        dex-info · dex-strings
-      资源与文件
-        resources · locales
-        native-libs · assets
-        uses-libs · packages
-      对比
-        diff · 两个 APK
-    搜索
-      strings 字符串
-      classes 类
-      methods 方法
-    脚本
-      run · 脚本文件
-      pipe · 标准输入
-      共享一次解析
-    AI 接口
-      ai explain
-      ai security-review
-      ai summarize
-      ai context · 事实 JSON
-    服务
-      serve · HTTP REST
-      api/v1 端点
-    能力发现
-      help --format=json
-    Claude Code Skills · 11
-      分诊 · 审计 · 逆向
-      DEX · 网络 · 资源
-      恶意软件 · 签名 · 对比
+flowchart LR
+  R(["AI-Apktool"])
+
+  R --> CORE["核心 · 源自 Apktool"]
+  R --> ANA["分析 · 38 · JSON"]
+  R --> SEA["搜索"]
+  R --> SCR["脚本"]
+  R --> AII["AI 接口"]
+  R --> SRV["服务"]
+  R --> DIS["能力发现"]
+  R --> SKL["Claude Code Skills · 11"]
+
+  CORE --> CORE1["decode / build"]
+  CORE --> CORE2["框架: install / clean / list"]
+  CORE --> CORE3["publicize-resources"]
+
+  ANA --> ANA1["元数据<br/>info · analyze · manifest · sdk-info · file-hash"]
+  ANA --> ANA2["组件<br/>activities · services · receivers · providers · api-surface"]
+  ANA --> ANA3["权限<br/>permissions · permission-detail"]
+  ANA --> ANA4["安全<br/>security 0-100 · signing · manifest-flags"]
+  ANA --> ANA5["DEX 与代码<br/>class · method · field · inheritance · structure · dex-strings"]
+  ANA --> ANA6["资源与文件<br/>resources · locales · native-libs · assets · file-list"]
+  ANA --> ANA7["对比<br/>diff · 两个 APK"]
+
+  SEA --> SEA1["strings 字符串 · classes 类 · methods 方法"]
+  SCR --> SCR1["run · pipe<br/>共享一次解析"]
+  AII --> AII1["ai · explain / security-review / summarize / context"]
+  SRV --> SRV1["serve · HTTP REST<br/>api/v1 端点"]
+  DIS --> DIS1["help --format=json"]
+  SKL --> SKL1["分诊 · 审计 · 逆向 · DEX · 网络<br/>资源 · 恶意软件 · 签名 · 对比"]
 ```
 
 ---
