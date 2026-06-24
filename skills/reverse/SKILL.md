@@ -17,7 +17,7 @@ Full reverse engineering workflow using AI-Apktool's decode, analysis, and searc
 
 ## Prerequisites
 
-AI-Apktool CLI must be available.
+The unified `apktool` CLI must be on your PATH. Build it from source with `./gradlew build shadowJar` (the `./apktool` wrapper invokes the resulting jar). All analysis commands print JSON to stdout; run `apktool help --format json` for the full machine-readable command catalog.
 
 ## Workflow
 
@@ -54,9 +54,10 @@ apktool signing <apk-file>
 ### Step 5: AI-Powered Analysis
 
 ```bash
-apktool ai <apk-file> -a explain
-apktool ai <apk-file> -a security-review
-apktool ai <apk-file> -a summarize
+apktool ai <apk-file> -a explain          # natural-language prompt describing the app
+apktool ai <apk-file> -a security-review  # security-assessment prompt
+apktool ai <apk-file> -a summarize        # concise summary prompt
+apktool ai <apk-file> -a context          # structured facts (JSON), not a prompt — feed to an agent
 ```
 
 ### Step 6: Rebuild (if modifications needed)
