@@ -92,3 +92,7 @@ apktool file-list app.apk | grep -i '\.xml\|\.json\|\.properties\|\.conf'
 # Check for tracking/analytics resources
 apktool strings app.apk -p 'google-analytics|firebase|mixpanel|flurry|amplitude'
 ```
+
+---
+
+> **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

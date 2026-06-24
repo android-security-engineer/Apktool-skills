@@ -84,3 +84,7 @@ apktool permission-detail <apk-file>
 - `"HIGH: Application is debuggable"` — app can be attached to a debugger
 - `"MEDIUM: Application allows backup"` — app data can be extracted via adb
 - `"HIGH: N exported components without permission protection"` — attack surface
+
+---
+
+> **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

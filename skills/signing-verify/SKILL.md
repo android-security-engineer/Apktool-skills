@@ -77,3 +77,7 @@ apktool signing app.apk
 apktool manifest-flags app.apk
 apktool file-hash app.apk
 ```
+
+---
+
+> **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

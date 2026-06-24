@@ -94,3 +94,7 @@ apktool inheritance <apk-file> com.example.SuspiciousClass
 # Get detailed class info
 apktool class-info <apk-file> com.example.TargetClass
 ```
+
+---
+
+> **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

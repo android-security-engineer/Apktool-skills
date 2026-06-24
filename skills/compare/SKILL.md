@@ -58,3 +58,7 @@ apktool signing <new-apk> > new_signing.json
 apktool file-hash <old-apk> > old_hash.json
 apktool file-hash <new-apk> > new_hash.json
 ```
+
+---
+
+> **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

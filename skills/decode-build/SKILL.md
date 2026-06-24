@@ -94,3 +94,7 @@ apktool build app_dir -o modified.apk
 apktool install-framework framework-res.apk
 apktool decode app.apk -o app_dir
 ```
+
+---
+
+> **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

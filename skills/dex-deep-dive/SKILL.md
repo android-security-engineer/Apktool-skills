@@ -90,3 +90,7 @@ apktool method-search app.apk -p 'onCreate|onStart|onResume|onPause|onStop|onDes
 apktool field-search app.apk -p 'password|secret|key|token|credential'
 apktool dex-strings app.apk | grep -i 'password\|api.key\|bearer'
 ```
+
+---
+
+> **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

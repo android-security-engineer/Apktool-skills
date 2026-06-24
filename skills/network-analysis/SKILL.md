@@ -84,3 +84,7 @@ apktool method-search app.apk -p 'TrustManager|HostnameVerifier'
 apktool strings app.apk -p '/api/.*'
 apktool method-search app.apk -p '@GET|@POST|@PUT|@DELETE'
 ```
+
+---
+
+> **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.
