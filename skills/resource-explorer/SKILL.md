@@ -92,6 +92,10 @@ apktool file-list app.apk | grep -i '\.xml\|\.json\|\.properties\|\.conf'
 apktool strings app.apk -p 'google-analytics|firebase|mixpanel|flurry|amplitude'
 ```
 
+## Run the Whole Inventory in One Pass
+
+Steps 1-3 hit the same APK with many commands — batch them with `apktool run` for a single shared parse and per-command error isolation. A ready-to-run script ships at [`scripts/resources.json`](scripts/resources.json); see [`references/batch-resources.md`](references/batch-resources.md) to run or retarget it. (`apk-info` reads a *decoded* directory, not the APK, so run it separately against your decode output.)
+
 ---
 
 > **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

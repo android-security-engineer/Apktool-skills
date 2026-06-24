@@ -1,0 +1,15 @@
+{
+  "apk": "app.apk",
+  "commands": [
+    "resources",
+    "resource-packages",
+    "lib-frame-packages",
+    "locales",
+    "file-list",
+    "file-hash",
+    "asset-list",
+    "native-libs",
+    "uses-libs",
+    { "command": "strings", "params": { "pattern": "google-analytics|firebase|mixpanel|flurry|amplitude" } }
+  ]
+}

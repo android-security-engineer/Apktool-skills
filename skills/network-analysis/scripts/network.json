@@ -1,0 +1,13 @@
+{
+  "apk": "app.apk",
+  "commands": [
+    "manifest-flags",
+    "security",
+    "api-surface",
+    "components",
+    { "command": "strings", "params": { "pattern": "https?://|api\\.|/v[0-9]/|graphql|websocket|/api/" } },
+    { "command": "method-search", "params": { "pattern": "OkHttp|Retrofit|HttpURLConnection|Volley|HttpClient" } },
+    { "command": "method-search", "params": { "pattern": "SSLSocket|TrustManager|HostnameVerifier|SSLContext" } },
+    { "command": "method-search", "params": { "pattern": "@GET|@POST|@PUT|@DELETE" } }
+  ]
+}

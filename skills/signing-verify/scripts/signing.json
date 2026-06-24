@@ -1,0 +1,9 @@
+{
+  "apk": "app.apk",
+  "commands": [
+    "signing",
+    "manifest-flags",
+    "security",
+    "file-hash"
+  ]
+}

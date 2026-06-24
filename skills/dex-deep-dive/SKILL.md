@@ -90,6 +90,10 @@ apktool field-search app.apk -p 'password|secret|key|token|credential'
 apktool dex-strings app.apk | grep -i 'password\|api.key\|bearer'
 ```
 
+## Run the DEX Survey in One Pass
+
+Steps 1 and 3 fire many commands at the same APK — batch them with `apktool run` for a single shared parse and per-command error isolation. A ready-to-run script ships at [`scripts/dex.json`](scripts/dex.json); see [`references/batch-dex.md`](references/batch-dex.md) to run or retarget it. The per-class commands (`class-info`, `inheritance`) are inherently targeted — run those individually once the survey points you at classes worth opening.
+
 ---
 
 > **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

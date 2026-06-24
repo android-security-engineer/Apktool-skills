@@ -84,6 +84,10 @@ apktool strings app.apk -p '/api/.*'
 apktool method-search app.apk -p '@GET|@POST|@PUT|@DELETE'
 ```
 
+## Run the Whole Audit in One Pass
+
+The endpoint searches, client/SSL method searches, and manifest/security checks all hit the same APK — batch them with `apktool run` for a single shared parse and per-command error isolation. A ready-to-run script ships at [`scripts/network.json`](scripts/network.json); see [`references/batch-network.md`](references/batch-network.md) to run or retarget it.
+
 ---
 
 > **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

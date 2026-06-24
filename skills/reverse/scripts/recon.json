@@ -1,0 +1,15 @@
+{
+  "apk": "app.apk",
+  "commands": [
+    "info",
+    "security",
+    "api-surface",
+    "signing",
+    "structure",
+    "dex-info",
+    { "command": "search", "params": { "type": "strings", "pattern": "password|secret|api.?key|Bearer|token|credential" } },
+    { "command": "search", "params": { "type": "strings", "pattern": "https?://" } },
+    { "command": "search", "params": { "type": "classes", "pattern": "Cipher|AES|RSA|DES|SecretKey|Login|Auth|Session|OAuth" } },
+    { "command": "search", "params": { "type": "methods", "pattern": "exec|loadLibrary|DexClassLoader|encrypt|decrypt" } }
+  ]
+}

@@ -77,6 +77,10 @@ apktool manifest-flags app.apk
 apktool file-hash app.apk
 ```
 
+## Run the Whole Audit in One Pass
+
+The signing audit pulls the certificate, manifest flags, security report, and file hashes from one APK — batch them with `apktool run` for a single shared parse and per-command error isolation. A ready-to-run script ships at [`scripts/signing.json`](scripts/signing.json); see [`references/batch-signing.md`](references/batch-signing.md) to run or retarget it. Cross-version certificate comparison still uses `diff` against a second APK (a two-APK operation, outside a single-parse script).
+
 ---
 
 > **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.

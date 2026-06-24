@@ -1,0 +1,12 @@
+{
+  "apk": "app.apk",
+  "commands": [
+    "dex-list",
+    "dex-info",
+    "structure",
+    "class-list",
+    { "command": "method-search", "params": { "pattern": "Cipher|SecretKey|MessageDigest|AES|RSA" } },
+    { "command": "method-search", "params": { "pattern": "onCreate|onStart|onResume|onPause|onStop|onDestroy" } },
+    { "command": "field-search", "params": { "pattern": "password|secret|key|token|credential" } }
+  ]
+}

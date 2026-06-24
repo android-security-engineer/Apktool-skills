@@ -94,6 +94,10 @@ apktool inheritance <apk-file> com.example.SuspiciousClass
 apktool class-info <apk-file> com.example.TargetClass
 ```
 
+## Run Recon in One Pass
+
+Steps 1 and 4 hit the same APK with many read-only commands — batch them with `apktool run` for a single shared parse and per-command error isolation. A ready-to-run script ships at [`scripts/recon.json`](scripts/recon.json); see [`references/batch-recon.md`](references/batch-recon.md) for how to run or retarget it. Use the one-pass recon to scope the target, then `decode` and dig into specific classes for the slower surgical work.
+
 ---
 
 > **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.
