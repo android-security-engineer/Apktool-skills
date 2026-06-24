@@ -12,7 +12,8 @@ This repository is a [Claude Code](https://docs.claude.com/en/docs/claude-code) 
 ├── skills/                # one directory per skill
 │   └── <skill-name>/
 │       ├── SKILL.md       # required: frontmatter + Markdown instructions
-│       └── references/    # optional: on-demand detail (progressive disclosure)
+│       ├── references/    # optional: on-demand detail (progressive disclosure)
+│       └── scripts/       # optional: runnable artifacts (e.g. `apktool run` JSON)
 ├── template/
 │   └── SKILL.md           # copy this to start a new skill
 ├── CLAUDE.md              # project instructions + full command catalog
@@ -49,3 +50,5 @@ Skills use three-level progressive disclosure:
 3. **Bundled resources** (`references/`, optional `scripts/`, `assets/`) — read on demand.
 
 Put searchable terms early and often so future Claude can find the skill.
+
+**`scripts/` example:** `security-audit/scripts/audit.json` and `malware-hunt/scripts/hunt.json` are runnable [`apktool run`](https://github.com/android-security-engineer/Apktool-skills) batch scripts. They execute many analysis commands against a single shared parse of one APK, with per-command error isolation. Ship deterministic, repetitive command sequences as `scripts/` artifacts rather than as copy-paste heredocs in Markdown — the skill body links to them and shows how to run or `pipe` them at any target.

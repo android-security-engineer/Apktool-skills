@@ -1,0 +1,13 @@
+{
+  "apk": "app.apk",
+  "commands": [
+    "security",
+    "api-surface",
+    "permission-detail",
+    "manifest-flags",
+    "signing",
+    { "command": "search", "params": { "type": "strings", "pattern": "password|secret|api.?key|token|credential" } },
+    { "command": "search", "params": { "type": "strings", "pattern": "https?://" } },
+    { "command": "method-search", "params": { "pattern": "DexClassLoader|PathClassLoader|TrustManager|HostnameVerifier" } }
+  ]
+}

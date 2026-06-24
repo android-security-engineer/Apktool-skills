@@ -5,8 +5,8 @@
 ## `run` / `pipe`
 
 ```bash
-apktool run <script.json>         # read commands from a JSON file
-apktool pipe [apk] < script.json  # read the JSON script from stdin
+apktool run <script.json>    # read the JSON script from a file
+apktool pipe < script.json   # read the JSON script from stdin
 ```
 
 Script format — commands may be bare strings or `{command, params}` objects:
@@ -25,7 +25,7 @@ Script format — commands may be bare strings or `{command, params}` objects:
 }
 ```
 
-Output is a single JSON object: `{ apk, totalCommands, results: { <command>: <result-or-error> } }`. When the same command appears more than once, its result key is suffixed with an index. For `pipe`, the `apk` field is optional if the APK path is passed as the first positional argument.
+Output is a single JSON object: `{ apk, totalCommands, results: { <command>: <result-or-error> } }`. When the same command appears more than once, its result key is suffixed with an index. The `apk` field is required (it must point at an existing file) for both `run` and `pipe`. To retarget a saved script without editing it, rewrite the field on the fly: `jq '.apk="other.apk"' script.json | apktool pipe`.
 
 ## `ai`
 
