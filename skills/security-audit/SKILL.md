@@ -95,3 +95,7 @@ Steps 1-5 hit the same APK repeatedly — batch them with `apktool run` for a si
 | M8: Code Tampering | `signing`, `security` |
 | M9: Reverse Engineering | `structure` |
 | M10: Extraneous Functionality | `manifest`, `search` |
+
+---
+
+> **Exact syntax & fields:** for any command's full options, output fields, or HTTP endpoint, use the **`reference`** skill — it keeps the full tables in on-demand `references/` files.
