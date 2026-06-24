@@ -1,6 +1,6 @@
 ---
 name: compare
-description: Use when comparing two versions of the same APK to spot what changed between releases — added or removed permissions, components, DEX files, native libs, version codes, or signer — to find new features, new attack surface, or regressions.
+description: Diffs two versions of the same APK — added/removed permissions, components, DEX files, native libs, version codes, and signer changes. Use this whenever the user has two APKs or app versions and wants to know what changed, what's new, what was removed, or whether a release introduced a regression or new attack surface.
 ---
 
 # APK Version Comparison

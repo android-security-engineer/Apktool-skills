@@ -1,6 +1,6 @@
 ---
 name: quick-analysis
-description: Use when first encountering an unknown APK and you need a fast overview — package name, version, SDK levels, permissions, components, and top security risks — before deciding where to dig deeper.
+description: Fast first-pass assessment of an unknown APK — package, version, SDK levels, permissions, components, and top security risks in one shot. Use this whenever you first encounter an APK or the user asks what an app is, what it does, or whether it looks safe, even if they don't explicitly say 'analyze'.
 ---
 
 # APK Quick Analysis

@@ -1,6 +1,6 @@
 ---
 name: signing-verify
-description: Use when verifying an APK's signing — inspecting certificate subject and issuer, fingerprints, validity dates, v1/v2/v3/v4 signature schemes, detecting debug or self-signed certs, or comparing signers across app versions.
+description: Verifies an APK's signing — certificate subject/issuer, fingerprints, validity dates, v1/v2/v3/v4 signature schemes, debug/self-signed detection, and signer comparison across versions. Use this whenever the user asks who signed an app, whether its signature is valid or trusted, or wants to compare or verify certificates.
 ---
 
 # APK Signing & Verification

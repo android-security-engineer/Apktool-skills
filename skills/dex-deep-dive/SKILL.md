@@ -1,6 +1,6 @@
 ---
 name: dex-deep-dive
-description: Use when exploring DEX bytecode — listing or inspecting classes, methods, and fields, tracing class inheritance chains, searching for specific implementations by regex, or analyzing multi-DEX apps.
+description: Deep DEX bytecode exploration — list and inspect classes, methods, and fields, trace inheritance chains, and regex-search implementations across multi-DEX apps. Use this whenever the user wants to understand code structure, find a specific class/method/field, trace a class hierarchy, or locate where something is implemented.
 ---
 
 # DEX Deep Dive

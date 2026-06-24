@@ -1,6 +1,6 @@
 ---
 name: reference
-description: Use as a lookup when you need the exact syntax, options, output JSON fields, or HTTP endpoint of a specific apktool command, rather than a guided analysis workflow.
+description: Exact CLI syntax, options, output JSON fields, and HTTP endpoints for every apktool command. Use this whenever you need the precise flags, parameters, or output schema of a specific command instead of a guided workflow, or are unsure how to invoke a command or parse its result.
 ---
 
 # AI-Apktool Command Reference

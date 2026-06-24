@@ -1,6 +1,6 @@
 ---
 name: security-audit
-description: Use when performing a security assessment of an APK — scoring risk and finding dangerous permissions, exported-component exposure, cleartext traffic, debuggable or backup-enabled flags, weak crypto, or mapping findings to the OWASP Mobile Top 10.
+description: Comprehensive APK security assessment with a 0-100 risk score, dangerous permissions, exported-component exposure, cleartext traffic, debuggable/backup flags, weak crypto, and OWASP Mobile Top 10 mapping. Use this whenever the user mentions security, vulnerabilities, risk, auditing, pentesting, or compliance, or asks whether an app is safe — even if they don't say 'audit'.
 ---
 
 # APK Security Audit

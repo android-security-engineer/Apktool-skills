@@ -1,6 +1,6 @@
 ---
 name: reverse
-description: Use when deeply analyzing, modifying, or understanding an Android app end to end — combining manifest, DEX, resource, and security analysis for full reverse engineering or malware investigation.
+description: Full end-to-end reverse engineering of an Android app, combining manifest, DEX, resource, and security analysis. Use this whenever the user wants to deeply understand, decompile, modify, patch, or investigate an app's internals or behavior — including malware investigation — even if they just ask how an app works.
 ---
 
 # APK Reverse Engineering

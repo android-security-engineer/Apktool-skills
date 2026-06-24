@@ -1,6 +1,6 @@
 ---
 name: network-analysis
-description: Use when finding an app's API endpoints, server URLs, cleartext (HTTP) traffic, SSL/TLS and certificate handling, or network security configuration, or auditing how an APK communicates over the network.
+description: Finds an app's API endpoints, server URLs, cleartext (HTTP) traffic, SSL/TLS handling, and network security configuration. Use this whenever the user asks about an app's network behavior, backends, APIs, domains, data transmission, certificate pinning, or insecure traffic — even if they don't say 'network'.
 ---
 
 # Network & Communication Analysis

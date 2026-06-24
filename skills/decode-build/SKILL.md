@@ -1,6 +1,6 @@
 ---
 name: decode-build
-description: Use when you need to decode an APK to smali and resources, rebuild a modified APK, convert binary AndroidManifest.xml to readable XML, or install and manage framework APKs for correct resource decoding.
+description: Decodes an APK to smali and resources, rebuilds a modified APK, converts binary AndroidManifest.xml to readable XML, and installs/manages framework APKs. Use this whenever the user wants to unpack, decompile, edit, patch, repackage, or rebuild an APK, or needs frameworks for correct resource decoding.
 ---
 
 # APK Decode & Build

@@ -1,6 +1,6 @@
 ---
 name: resource-explorer
-description: Use when exploring an APK's resources, string tables, supported locales, assets, native libraries, or file structure, or reading metadata from an already-decoded apktool directory.
+description: Explores an APK's resources, string tables, locales, assets, native libraries, and file structure, and reads metadata from a decoded apktool directory. Use this whenever the user asks about an app's resources, strings, translations, images, assets, libraries, or what files it contains.
 ---
 
 # Resource & File Explorer
