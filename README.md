@@ -66,38 +66,9 @@ This is a **fork of [Apktool](https://github.com/iBotPeaches/Apktool)** (by Conn
 
 > One picture beats a thousand words — the full capability tree at a glance.
 
-```mermaid
-flowchart LR
-  R(["AI-Apktool"])
+![AI-Apktool feature tree](docs/assets/feature-tree.png)
 
-  R --> CORE["Core · from Apktool"]
-  R --> ANA["Analysis · 38 · JSON"]
-  R --> SEA["Search"]
-  R --> SCR["Scripting"]
-  R --> AII["AI Interface"]
-  R --> SRV["Service"]
-  R --> DIS["Discovery"]
-  R --> SKL["Claude Code Skills · 11"]
-
-  CORE --> CORE1["decode / build"]
-  CORE --> CORE2["framework: install / clean / list"]
-  CORE --> CORE3["publicize-resources"]
-
-  ANA --> ANA1["Metadata<br/>info · analyze · manifest · sdk-info · file-hash"]
-  ANA --> ANA2["Components<br/>activities · services · receivers · providers · api-surface"]
-  ANA --> ANA3["Permissions<br/>permissions · permission-detail"]
-  ANA --> ANA4["Security<br/>security 0-100 · signing · manifest-flags"]
-  ANA --> ANA5["DEX and Code<br/>class · method · field · inheritance · structure · dex-strings"]
-  ANA --> ANA6["Resources and Files<br/>resources · locales · native-libs · assets · file-list"]
-  ANA --> ANA7["Compare<br/>diff · two APKs"]
-
-  SEA --> SEA1["strings · classes · methods"]
-  SCR --> SCR1["run · pipe<br/>single shared parse"]
-  AII --> AII1["ai · explain / security-review / summarize / context"]
-  SRV --> SRV1["serve · HTTP REST<br/>api/v1 endpoints"]
-  DIS --> DIS1["help --format=json"]
-  SKL --> SKL1["triage · audit · reverse · dex · network<br/>resources · malware · signing · compare"]
-```
+<sub>Rendered by [`scripts/feature_tree.py`](scripts/feature_tree.py) (pure Pillow, zero external deps) — regenerate with `python3 scripts/feature_tree.py`.</sub>
 
 ---
 
