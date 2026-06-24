@@ -15,6 +15,9 @@ AI-Apktool turns [Apktool](https://apktool.org) into an AI-native reverse engine
 ## Table of Contents
 
 - [Highlights](#highlights)
+- [Built on Apktool](#built-on-apktool)
+- [Feature Map](#feature-map)
+- [AI Agent Integration](#ai-agent-integration)
 - [Quick Start](#quick-start)
 - [Skills](#skills)
 - [Installation](#installation)
@@ -35,6 +38,151 @@ AI-Apktool turns [Apktool](https://apktool.org) into an AI-native reverse engine
 - **Batch scripting** — run dozens of analysis commands in one pass over a single decoded APK with `run` / `pipe`.
 - **HTTP API** — expose the same capabilities over REST with `apktool serve`.
 - **Zero log scraping** — structured output everywhere, designed for agents.
+
+---
+
+## Built on Apktool
+
+This is a **fork of [Apktool](https://github.com/iBotPeaches/Apktool)** (by Connor Tumbleson / iBotPeaches), re-engineered into an **AI-native platform**. We keep the battle-tested decode/build engine intact and layer an analysis, scripting, and serving surface on top — purpose-built for LLM agents rather than human eyeballs.
+
+| | Upstream Apktool | AI-Apktool (this fork) |
+|---|---|---|
+| **Primary user** | Human at a terminal | AI agent / automation |
+| **Decode / build / framework mgmt** | ✅ | ✅ *(inherited, unchanged)* |
+| **Output format** | Human-readable logs & files | **Structured JSON on every analysis command** |
+| **Static analysis commands** | — | **38** (security, DEX, components, resources, signing…) |
+| **Regex search** (strings/classes/methods) | — | ✅ `search` |
+| **Batch engine** (one parse, many commands) | — | ✅ `run` / `pipe` |
+| **LLM prompt / context generation** | — | ✅ `ai` |
+| **HTTP REST API** | — | ✅ `serve` |
+| **Machine-readable capability catalog** | — | ✅ `help --format=json` |
+| **Claude Code Skills** | — | ✅ 11 skills |
+
+> In short: everything that *unpacks and repacks* an APK comes from upstream Apktool; everything that *reasons about* an APK and *exposes it to an agent* is what this fork adds.
+
+---
+
+## Feature Map
+
+> One picture beats a thousand words — the full capability tree at a glance.
+
+```mermaid
+mindmap
+  root((AI-Apktool))
+    Core · from Apktool
+      decode / build
+      install / clean / list framework
+      publicize-resources
+    Analysis · 38 · JSON
+      Metadata
+        info · analyze
+        manifest · manifest-xml
+        sdk-info · file-list · file-hash
+      Components
+        activities · services
+        receivers · providers
+        api-surface
+      Permissions
+        permissions
+        permission-detail
+      Security
+        security · risk 0-100
+        signing
+        manifest-flags
+      DEX & Code
+        class-list · class-info
+        method-search · field-search
+        inheritance · structure
+        dex-info · dex-strings
+      Resources & Files
+        resources · locales
+        native-libs · assets
+        uses-libs · packages
+      Compare
+        diff · two APKs
+    Search
+      strings
+      classes
+      methods
+    Scripting
+      run · script file
+      pipe · stdin
+      single shared parse
+    AI Interface
+      ai explain
+      ai security-review
+      ai summarize
+      ai context · facts JSON
+    Service
+      serve · HTTP REST
+      api/v1 endpoints
+    Discovery
+      help --format=json
+    Claude Code Skills · 11
+      triage · audit · reverse
+      dex · network · resources
+      malware · signing · compare
+```
+
+---
+
+## AI Agent Integration
+
+AI-Apktool is **AI-native**: it offers an agent multiple ways to plug in, all sharing the same JSON-emitting core. Pick the surface that matches your agent's runtime.
+
+### 1. Claude Code Skills (native, auto-invoked)
+
+The richest path. Install once and Claude Code discovers the 11 skills and invokes the right one automatically based on the task.
+
+```bash
+claude config add marketplace ai-apktool https://github.com/android-security-engineer/Apktool-skills.git
+claude plugin install ai-apktool@ai-apktool
+# Then just ask: "analyze this APK" / "is app.apk safe?" / "what changed between v1 and v2?"
+```
+
+### 2. Unified CLI → JSON (any agent, via shell / tool-use)
+
+Every analysis command prints JSON to stdout, so any agent that can run a shell command (OpenAI tool-use, LangChain, a cron job…) consumes the output directly — no log scraping.
+
+```bash
+apktool analyze app.apk        # one-shot full analysis as JSON
+apktool security app.apk | jq '.riskScore'
+```
+
+### 3. Batch scripting — `run` / `pipe` (single parse, many commands)
+
+Hand the agent a JSON script; it executes all commands against **one shared parse** with per-command error isolation — far cheaper than N separate invocations.
+
+```bash
+echo '{"apk":"app.apk","commands":["info","security","signing","api-surface"]}' | apktool pipe
+# Ready-made audit/hunt/recon scripts ship in skills/*/scripts/*.json
+```
+
+### 4. HTTP REST API — `serve` (remote / networked agents)
+
+For agents that aren't co-located with the binary, expose the whole capability set over REST.
+
+```bash
+apktool serve -p 8080
+curl 'http://localhost:8080/api/v1/security?apk=/path/to/app.apk' | jq '.riskScore'
+```
+
+### 5. Prompt & context generation — `ai`
+
+Let the tool draft the prompt or hand back structured facts for your own model to reason over.
+
+```bash
+apktool ai app.apk -a security-review   # an LLM-ready prompt
+apktool ai app.apk -a context           # structured AiContext JSON (facts, not prose)
+```
+
+### 6. Capability discovery — `help --format=json`
+
+Agents can introspect the entire command surface (names, params, output schema, categories) at runtime to plan tool calls dynamically.
+
+```bash
+apktool help --format=json | jq '.commands | length'   # 51
+```
 
 ---
 
