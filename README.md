@@ -7,6 +7,9 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE.md)
 [![Skills](https://img.shields.io/badge/skills-11-green.svg)](#skills)
 [![CLI Commands](https://img.shields.io/badge/CLI%20commands-51-orange.svg)](#cli-command-reference)
+[![Docs](https://img.shields.io/badge/docs-website-1F6FEB.svg)](https://android-security-engineer.github.io/Apktool-skills/)
+
+📖 **Documentation website:** https://android-security-engineer.github.io/Apktool-skills/ — searchable command reference, skills, AI integration, and HTTP API ([source](website/)).
 
 AI-Apktool turns [Apktool](https://apktool.org) into an AI-native reverse engineering platform. Every analysis capability emits structured **JSON**, so Claude Code (or any LLM agent) can reason over an APK without scraping human-readable logs. It ships as a set of Claude Code **Skills** plus a unified `apktool` CLI and an optional HTTP API.
 

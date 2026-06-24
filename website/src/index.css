@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #f5f7fa;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Smooth anchor scrolling for in-page links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Make scrollable code blocks look tidy */
+pre::-webkit-scrollbar {
+  height: 8px;
+}
+pre::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}

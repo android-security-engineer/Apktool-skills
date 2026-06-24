@@ -7,6 +7,9 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE.md)
 [![Skills](https://img.shields.io/badge/skills-11-green.svg)](#skills包含-11-个)
 [![CLI Commands](https://img.shields.io/badge/CLI%20commands-51-orange.svg)](#cli-命令参考)
+[![Docs](https://img.shields.io/badge/docs-website-1F6FEB.svg)](https://android-security-engineer.github.io/Apktool-skills/)
+
+📖 **文档网站：** https://android-security-engineer.github.io/Apktool-skills/ —— 可搜索的命令参考、Skills、AI 接入方式与 HTTP API（[源码](website/)）。
 
 AI-Apktool 将 [Apktool](https://apktool.org) 改造为一个 AI 原生的逆向工程平台。所有分析能力均输出结构化 **JSON**，因此 Claude Code（或任意 LLM 智能体）无需解析人类可读日志即可直接对 APK 进行推理。它以一组 Claude Code **Skills** 形式交付，并附带统一的 `apktool` CLI 与可选的 HTTP API。
 

@@ -1,0 +1,589 @@
+{
+  "tool": "AI-Apktool",
+  "version": "3.0.3-SNAPSHOT",
+  "description": "AI-native Android reverse engineering platform",
+  "commands": [
+    {
+      "name": "decode",
+      "shortName": "d",
+      "description": "Decode an APK file to a directory of smali and resources",
+      "usage": "apktool d [options] <apk-file>",
+      "outputFormat": "Directory structure with smali/, res/, AndroidManifest.xml, apktool.yml",
+      "examples": [
+        "apktool d app.apk",
+        "apktool d app.apk -o output_dir",
+        "apktool d app.apk -s (no source decode)"
+      ],
+      "params": [],
+      "category": "core"
+    },
+    {
+      "name": "build",
+      "shortName": "b",
+      "description": "Build an APK from a decoded directory",
+      "usage": "apktool b [options] <apk-dir>",
+      "outputFormat": "Built APK file in dist/ directory",
+      "examples": [
+        "apktool b app_dir",
+        "apktool b app_dir -o custom.apk"
+      ],
+      "params": [],
+      "category": "core"
+    },
+    {
+      "name": "install-framework",
+      "shortName": "if",
+      "description": "Install a framework APK for resource decoding",
+      "usage": "apktool if [options] <apk-file>",
+      "outputFormat": "Framework file installed to framework directory",
+      "examples": [
+        "apktool if framework-res.apk"
+      ],
+      "params": [],
+      "category": "core"
+    },
+    {
+      "name": "clean-frameworks",
+      "shortName": "cf",
+      "description": "Remove installed framework files",
+      "usage": "apktool cf [options]",
+      "outputFormat": "Framework files removed",
+      "examples": [
+        "apktool cf"
+      ],
+      "params": [],
+      "category": "core"
+    },
+    {
+      "name": "list-frameworks",
+      "shortName": "lf",
+      "description": "List installed framework files",
+      "usage": "apktool lf [options]",
+      "outputFormat": "List of framework file names",
+      "examples": [
+        "apktool lf"
+      ],
+      "params": [],
+      "category": "core"
+    },
+    {
+      "name": "publicize-resources",
+      "shortName": "pr",
+      "description": "Make all resources public in an ARSC file",
+      "usage": "apktool pr <arsc-file>",
+      "outputFormat": "Modified ARSC file",
+      "examples": [
+        "apktool pr resources.arsc"
+      ],
+      "params": [],
+      "category": "core"
+    },
+    {
+      "name": "info",
+      "description": "Get APK metadata summary: package name, version, file size, component counts",
+      "usage": "apktool info <apk-file>",
+      "outputFormat": "JSON: {fileName, fileSize, packageName, versionName, versionCode, minSdkVersion, targetSdkVersion, dexCount, hasResources, hasAssets, hasNativeLibs, architectures, permissionCount, activityCount, serviceCount, receiverCount, providerCount}",
+      "examples": [
+        "apktool info app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "manifest",
+      "description": "Get decoded AndroidManifest.xml as structured JSON: all components, permissions, SDK info, flags",
+      "usage": "apktool manifest <apk-file>",
+      "outputFormat": "JSON: {packageName, versionName, versionCode, minSdkVersion, targetSdkVersion, permissions[], activities[{name,exported,intentFilters[],permissions[]}], services[], receivers[], providers[], debuggable, allowBackup}",
+      "examples": [
+        "apktool manifest app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "permissions",
+      "description": "Get list of all permissions declared in AndroidManifest.xml",
+      "usage": "apktool permissions <apk-file>",
+      "outputFormat": "JSON array of permission strings",
+      "examples": [
+        "apktool permissions app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "activities",
+      "description": "Get list of all Activity components with export status and intent filters",
+      "usage": "apktool activities <apk-file>",
+      "outputFormat": "JSON array: [{name, exported, intentFilters[], permissions[]}]",
+      "examples": [
+        "apktool activities app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "services",
+      "description": "Get list of all Service components with export status",
+      "usage": "apktool services <apk-file>",
+      "outputFormat": "JSON array: [{name, exported, intentFilters[], permissions[]}]",
+      "examples": [
+        "apktool services app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "receivers",
+      "description": "Get list of all BroadcastReceiver components with export status",
+      "usage": "apktool receivers <apk-file>",
+      "outputFormat": "JSON array: [{name, exported, intentFilters[], permissions[]}]",
+      "examples": [
+        "apktool receivers app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "providers",
+      "description": "Get list of all ContentProvider components with export status",
+      "usage": "apktool providers <apk-file>",
+      "outputFormat": "JSON array: [{name, exported, intentFilters[], permissions[]}]",
+      "examples": [
+        "apktool providers app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "components",
+      "description": "Get all Android components (activities, services, receivers, providers) in one command",
+      "usage": "apktool components <apk-file>",
+      "outputFormat": "JSON: {activities[], services[], receivers[], providers[]}",
+      "examples": [
+        "apktool components app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "sdk-info",
+      "description": "Get SDK version requirements (min/target/max SDK)",
+      "usage": "apktool sdk-info <apk-file>",
+      "outputFormat": "JSON: {minSdkVersion, targetSdkVersion, maxSdkVersion}",
+      "examples": [
+        "apktool sdk-info app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "resources",
+      "description": "Get resource table summary: type counts, locales, package info",
+      "usage": "apktool resources <apk-file>",
+      "outputFormat": "JSON: {packageName, packageId, typeCounts{typeName->count}, locales[], totalEntries}",
+      "examples": [
+        "apktool resources app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "security",
+      "description": "Get security analysis report: dangerous permissions, exported components risk, risk score",
+      "usage": "apktool security <apk-file>",
+      "outputFormat": "JSON: {dangerousPermissions[], highRiskComponents[], debuggable, allowBackup, usesCleartextTraffic, findings[], riskScore(0-100)}",
+      "examples": [
+        "apktool security app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "api-surface",
+      "description": "Get all exported components and their intent filters - the app's public API surface",
+      "usage": "apktool api-surface <apk-file>",
+      "outputFormat": "JSON: {exportedActivities[], exportedServices[], exportedReceivers[], exportedProviders[], intentFilters[{component,actions[],categories[],dataSchemes[]}], totalExportedComponents}",
+      "examples": [
+        "apktool api-surface app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "strings",
+      "description": "Extract all strings from DEX files and resources with optional pattern filtering",
+      "usage": "apktool strings <apk-file> [pattern]",
+      "outputFormat": "JSON: {query, type, totalMatches, matches[{name, value, source}]}",
+      "examples": [
+        "apktool strings app.apk",
+        "apktool strings app.apk 'http.*'"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "signing",
+      "description": "Get APK signing certificate information: signer, certificates, digests",
+      "usage": "apktool signing <apk-file>",
+      "outputFormat": "JSON: {v1Signing, v2Signing, v3Signing, certificates[{subject, issuer, serial, notBefore, notAfter, fingerprints{sha256,sha1,md5}}]}",
+      "examples": [
+        "apktool signing app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "search",
+      "description": "Search APK content: strings, classes, or methods by regex pattern",
+      "usage": "apktool search <apk-file> [pattern] -t <type>",
+      "outputFormat": "JSON: {query, type, totalMatches, matches[{name, value, source}]}",
+      "examples": [
+        "apktool search app.apk 'Activity' -t classes",
+        "apktool search app.apk 'http.*' -t strings",
+        "apktool search app.apk 'onCreate' -t methods"
+      ],
+      "params": [],
+      "category": "search"
+    },
+    {
+      "name": "diff",
+      "description": "Compare two APKs: find added/removed permissions, components, version changes",
+      "usage": "apktool diff <apk1> <apk2>",
+      "outputFormat": "JSON: {addedPermissions[], removedPermissions[], addedActivities[], removedActivities[], addedServices[], removedServices[], versionCodeChange, versionNameChange, targetSdkChange}",
+      "examples": [
+        "apktool diff app_v1.apk app_v2.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "structure",
+      "description": "Get code structure overview: class/method/field counts, package distribution",
+      "usage": "apktool structure <apk-file>",
+      "outputFormat": "JSON: {totalClasses, totalMethods, totalFields, packageCounts{}, topClasses[], dexCount, dexClassCounts{}}",
+      "examples": [
+        "apktool structure app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "analyze",
+      "description": "Run comprehensive analysis: all metadata, security, API surface, signing, resources, and structure in one command",
+      "usage": "apktool analyze <apk-file>",
+      "outputFormat": "JSON: {summary, manifest, security, apiSurface, resources, signing, structure}",
+      "examples": [
+        "apktool analyze app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "dex-list",
+      "description": "List all DEX files in the APK with count",
+      "usage": "apktool dex-list <apk-file>",
+      "outputFormat": "JSON: {dexCount, dexFiles[]}",
+      "examples": [
+        "apktool dex-list app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "locales",
+      "description": "List all supported locales/regions from the resource table",
+      "usage": "apktool locales <apk-file>",
+      "outputFormat": "JSON array of locale strings",
+      "examples": [
+        "apktool locales app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "native-libs",
+      "description": "List native libraries per architecture with file names",
+      "usage": "apktool native-libs <apk-file>",
+      "outputFormat": "JSON: {hasNativeLibs, architectures[], libsByArch{arch->[libs]}}",
+      "examples": [
+        "apktool native-libs app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "dex-info",
+      "description": "Get per-DEX class/method/field statistics",
+      "usage": "apktool dex-info <apk-file>",
+      "outputFormat": "JSON: {dexName->{classes,methods,fields}}",
+      "examples": [
+        "apktool dex-info app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "apk-info",
+      "description": "Read decoded APK metadata from apktool.yml in a decoded directory",
+      "usage": "apktool apk-info <decoded-dir>",
+      "outputFormat": "JSON: {version, apkFileName, usesFramework, usesLibrary, sdkInfo, versionInfo, resourcesInfo, featureFlags, doNotCompress, hasSources, hasManifest, hasResources}",
+      "examples": [
+        "apktool apk-info decoded_app_dir"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "resource-packages",
+      "description": "List resource package groups with IDs, names, and sub-packages",
+      "usage": "apktool resource-packages <apk-file>",
+      "outputFormat": "JSON: {packageName, packageId, packageGroups[{id,name,basePackageName,subPackages}], packageGroupCount}",
+      "examples": [
+        "apktool resource-packages app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "lib-frame-packages",
+      "description": "List shared library and framework package IDs from the resource table",
+      "usage": "apktool lib-frame-packages <apk-file>",
+      "outputFormat": "JSON: {libPackageIds[], framePackageIds[]}",
+      "examples": [
+        "apktool lib-frame-packages app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "uses-libs",
+      "description": "List shared libraries declared in AndroidManifest.xml",
+      "usage": "apktool uses-libs <apk-file>",
+      "outputFormat": "JSON array of library names",
+      "examples": [
+        "apktool uses-libs app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "manifest-flags",
+      "description": "Get manifest security flags: debuggable, allowBackup, cleartext traffic, network security config",
+      "usage": "apktool manifest-flags <apk-file>",
+      "outputFormat": "JSON: {debuggable, allowBackup, usesCleartextTraffic, networkSecurityConfig}",
+      "examples": [
+        "apktool manifest-flags app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "version",
+      "shortName": "v",
+      "description": "Show version information",
+      "usage": "apktool version",
+      "outputFormat": "Version string",
+      "examples": [
+        "apktool version"
+      ],
+      "params": [],
+      "category": "general"
+    },
+    {
+      "name": "apk-version",
+      "description": "Get APK version information (alias for version on APK files)",
+      "usage": "apktool apk-version <apk-file>",
+      "outputFormat": "JSON: {packageName, versionCode, versionName}",
+      "examples": [
+        "apktool apk-version app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "file-list",
+      "description": "List all files in the APK with sizes and compression info",
+      "usage": "apktool file-list <apk-file>",
+      "outputFormat": "JSON: {totalFiles, totalSize, totalCompressedSize, entries[{name,size,compressedSize,directory}]}",
+      "examples": [
+        "apktool file-list app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "file-hash",
+      "description": "Calculate SHA-256, SHA-1, and MD5 hash of the APK file",
+      "usage": "apktool file-hash <apk-file>",
+      "outputFormat": "JSON: {sha256, sha1, md5, fileSize, fileName}",
+      "examples": [
+        "apktool file-hash app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "class-info",
+      "description": "Get detailed info about a DEX class: methods, fields, superclass, interfaces",
+      "usage": "apktool class-info <apk-file> <class-name>",
+      "outputFormat": "JSON: {className, superClass, accessFlags, interfaces[], methods[{name,accessFlags,returnType,parameters[]}], fields[{name,accessFlags,type}]}",
+      "examples": [
+        "apktool class-info app.apk com.example.MyActivity"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "class-list",
+      "description": "List all class names from DEX files",
+      "usage": "apktool class-list <apk-file>",
+      "outputFormat": "JSON: {totalClasses, classes[]}",
+      "examples": [
+        "apktool class-list app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "method-search",
+      "description": "Search method signatures by regex pattern with full type info",
+      "usage": "apktool method-search <apk-file> [-p <pattern>]",
+      "outputFormat": "JSON: {totalMatches, methods[{className, methodName, returnType, parameters[], accessFlags}]}",
+      "examples": [
+        "apktool method-search app.apk -p 'onCreate'",
+        "apktool method-search app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "field-search",
+      "description": "Search field names by regex pattern with type info",
+      "usage": "apktool field-search <apk-file> [-p <pattern>]",
+      "outputFormat": "JSON: {totalMatches, fields[{className, fieldName, type, accessFlags}]}",
+      "examples": [
+        "apktool field-search app.apk -p 'mContext'",
+        "apktool field-search app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "asset-list",
+      "description": "List all files in the assets/ directory",
+      "usage": "apktool asset-list <apk-file>",
+      "outputFormat": "JSON: {hasAssets, totalAssets, assets[]}",
+      "examples": [
+        "apktool asset-list app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "dex-strings",
+      "description": "Extract all strings from DEX files (not resources)",
+      "usage": "apktool dex-strings <apk-file>",
+      "outputFormat": "JSON: {totalStrings, strings[]}",
+      "examples": [
+        "apktool dex-strings app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "permission-detail",
+      "description": "Get detailed permission analysis with danger level and category classification",
+      "usage": "apktool permission-detail <apk-file>",
+      "outputFormat": "JSON: {totalPermissions, dangerousCount, normalCount, customCount, permissions[{name, dangerous, category}]}",
+      "examples": [
+        "apktool permission-detail app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "inheritance",
+      "description": "Get class inheritance chain (superclass hierarchy) for a given class",
+      "usage": "apktool inheritance <apk-file> <class-name>",
+      "outputFormat": "JSON: {className, inheritanceChain[]}",
+      "examples": [
+        "apktool inheritance app.apk com.example.MyActivity"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "manifest-xml",
+      "description": "Get the full decoded AndroidManifest.xml as text (for AI context)",
+      "usage": "apktool manifest-xml <apk-file>",
+      "outputFormat": "JSON: {manifestXml}",
+      "examples": [
+        "apktool manifest-xml app.apk"
+      ],
+      "params": [],
+      "category": "analysis"
+    },
+    {
+      "name": "serve",
+      "description": "Start HTTP API server for AI agent integration",
+      "usage": "apktool serve [-p <port>]",
+      "outputFormat": "HTTP server on specified port (default 8080)",
+      "examples": [
+        "apktool serve",
+        "apktool serve -p 9090"
+      ],
+      "params": [],
+      "category": "service"
+    },
+    {
+      "name": "run",
+      "description": "Run a JSON script of analysis commands against an APK (shared context, batch execution)",
+      "usage": "apktool run <script.json>",
+      "outputFormat": "JSON: {apk, totalCommands, successCount, failCount, results{}, errors[]}",
+      "examples": [
+        "apktool run analysis.json"
+      ],
+      "params": [],
+      "category": "scripting"
+    },
+    {
+      "name": "pipe",
+      "description": "Read JSON commands from stdin and execute against an APK (suitable for shell pipes)",
+      "usage": "apktool pipe < script.json",
+      "outputFormat": "JSON: {apk, totalCommands, successCount, failCount, results{}, errors[]}",
+      "examples": [
+        "echo '{\"apk\":\"app.apk\",\"commands\":[\"info\",\"security\"]}' | apktool pipe"
+      ],
+      "params": [],
+      "category": "scripting"
+    },
+    {
+      "name": "ai",
+      "description": "Generate LLM-ready analysis prompts or structured context for AI-powered APK review",
+      "usage": "apktool ai <apk-file> -a <action>",
+      "outputFormat": "Text prompt (explain/security-review/summarize) or JSON context (context)",
+      "examples": [
+        "apktool ai app.apk",
+        "apktool ai app.apk -a security-review",
+        "apktool ai app.apk -a summarize",
+        "apktool ai app.apk -a context"
+      ],
+      "params": [],
+      "category": "ai"
+    },
+    {
+      "name": "help",
+      "shortName": "h",
+      "description": "Show help information. Use --format json for AI-consumable output",
+      "usage": "apktool help [--format json]",
+      "outputFormat": "Text help or JSON command catalog",
+      "examples": [
+        "apktool help",
+        "apktool help --format json"
+      ],
+      "params": [],
+      "category": "general"
+    }
+  ]
+}
