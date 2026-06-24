@@ -1,7 +1,6 @@
 ---
 name: dex-deep-dive
-description: Deep DEX analysis workflow for class, method, and field exploration. Use when you need to understand code structure, trace class hierarchies, or search for specific implementations.
-autoInvoke: true
+description: Use when exploring DEX bytecode — listing or inspecting classes, methods, and fields, tracing class inheritance chains, searching for specific implementations by regex, or analyzing multi-DEX apps.
 ---
 
 # DEX Deep Dive

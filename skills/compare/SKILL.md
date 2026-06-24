@@ -1,7 +1,6 @@
 ---
 name: compare
-description: APK version comparison workflow. Use when comparing two versions of the same app to identify changes, new features, or regressions.
-autoInvoke: true
+description: Use when comparing two versions of the same APK to spot what changed between releases — added or removed permissions, components, DEX files, native libs, version codes, or signer — to find new features, new attack surface, or regressions.
 ---
 
 # APK Version Comparison

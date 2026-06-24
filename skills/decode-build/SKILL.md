@@ -1,7 +1,6 @@
 ---
 name: decode-build
-description: APK decode and build workflow. Use when you need to decode an APK to smali/resources, rebuild it, or manage framework dependencies.
-autoInvoke: true
+description: Use when you need to decode an APK to smali and resources, rebuild a modified APK, convert binary AndroidManifest.xml to readable XML, or install and manage framework APKs for correct resource decoding.
 ---
 
 # APK Decode & Build

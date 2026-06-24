@@ -1,7 +1,6 @@
 ---
 name: network-analysis
-description: Network and communication analysis workflow. Use when you need to find API endpoints, URLs, network security issues, or cleartext traffic in an APK.
-autoInvoke: true
+description: Use when finding an app's API endpoints, server URLs, cleartext (HTTP) traffic, SSL/TLS and certificate handling, or network security configuration, or auditing how an APK communicates over the network.
 ---
 
 # Network & Communication Analysis

@@ -1,7 +1,6 @@
 ---
 name: security-audit
-description: Comprehensive security audit workflow for Android APK files. Use when performing security analysis, vulnerability assessment, or compliance checking.
-autoInvoke: true
+description: Use when performing a security assessment of an APK — scoring risk and finding dangerous permissions, exported-component exposure, cleartext traffic, debuggable or backup-enabled flags, weak crypto, or mapping findings to the OWASP Mobile Top 10.
 ---
 
 # APK Security Audit

@@ -1,7 +1,6 @@
 ---
 name: signing-verify
-description: APK signing and certificate verification workflow. Use when you need to verify APK signing, check certificate details, or assess signing security.
-autoInvoke: true
+description: Use when verifying an APK's signing — inspecting certificate subject and issuer, fingerprints, validity dates, v1/v2/v3/v4 signature schemes, detecting debug or self-signed certs, or comparing signers across app versions.
 ---
 
 # APK Signing & Verification

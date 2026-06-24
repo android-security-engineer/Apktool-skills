@@ -1,7 +1,6 @@
 ---
 name: reference
-description: Complete CLI command reference for AI-Apktool. Use as a lookup when you need the exact syntax, options, output fields, or HTTP endpoint of any command.
-autoInvoke: true
+description: Use as a lookup when you need the exact syntax, options, output JSON fields, or HTTP endpoint of a specific apktool command, rather than a guided analysis workflow.
 ---
 
 # AI-Apktool Command Reference

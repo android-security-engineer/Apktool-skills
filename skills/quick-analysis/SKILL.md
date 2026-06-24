@@ -1,7 +1,6 @@
 ---
 name: quick-analysis
-description: Quick APK analysis workflow for initial assessment. Use when you need a fast overview of an unknown APK file.
-autoInvoke: true
+description: Use when first encountering an unknown APK and you need a fast overview — package name, version, SDK levels, permissions, components, and top security risks — before deciding where to dig deeper.
 ---
 
 # APK Quick Analysis

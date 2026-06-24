@@ -1,7 +1,6 @@
 ---
 name: resource-explorer
-description: Resource and file exploration workflow. Use when you need to understand app resources, locales, assets, or file structure.
-autoInvoke: true
+description: Use when exploring an APK's resources, string tables, supported locales, assets, native libraries, or file structure, or reading metadata from an already-decoded apktool directory.
 ---
 
 # Resource & File Explorer

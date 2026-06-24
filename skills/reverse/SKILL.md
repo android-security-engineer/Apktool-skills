@@ -1,7 +1,6 @@
 ---
 name: reverse
-description: Full reverse engineering workflow for Android APK files. Use when you need to deeply analyze, modify, or understand an Android application's internals.
-autoInvoke: true
+description: Use when deeply analyzing, modifying, or understanding an Android app end to end — combining manifest, DEX, resource, and security analysis for full reverse engineering or malware investigation.
 ---
 
 # APK Reverse Engineering
